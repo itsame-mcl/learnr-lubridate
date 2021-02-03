@@ -28,7 +28,6 @@ L'installation et le chargement s'effectuent à l'aide la commande suivante :
 library(lubridate)
 ```
 
-
 ## Importation de dates/heures
 
 ### Comment ça marche ? 
@@ -52,8 +51,6 @@ lubridate1
 
 Write the R code required to add two plus two:
 
-Ajout d'un test
-
 ```{r two-plus-two, exercise=TRUE}
 
 ```
@@ -65,11 +62,6 @@ Ajout d'un test
 Now write a that adds any two numbers and then call it:
 
 
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
-```
 ```{r add-function, exercise=TRUE, exercise.lines = 5}
 add <- function() {
   
