@@ -28,7 +28,6 @@ L'installation et le chargement s'effectuent à l'aide la commande suivante :
 library(lubridate)
 ```
 
-
 ## Importation de dates/heures (Kévin)
 
 ### Comment ça marche ? 
@@ -46,7 +45,6 @@ lubridate1 <- dmy(date_1)
 lubridate1
 ```
 
-<<<<<<< HEAD
 ## Conversion entre les fuseaux horaires (Kévin)
 
 ## Manipulation des dates 
@@ -57,12 +55,7 @@ lubridate1
 
 ## Horodatage (Maxence)
 
-
-
 ### Exercise 
-=======
-### Exercice 
->>>>>>> 985115df44ae53987e6f5a8601f58ec4c799312c
 
 *Here's a simple exercise with an empty code chunk provided for entering the answer.*
 
@@ -86,13 +79,6 @@ add <- function() {
   
 }
 ```
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
-```
-
-
 
 ### Exercise with Hint
 
@@ -130,14 +116,3 @@ quiz(
   )
 )
 ```
-<<<<<<< HEAD
-=======
-
-## Manipulation des dates
-### Accès aux éléments d'une date
-### Modification d'une date
-### Calculs avec des dates
-### Horodatage
-
-Test de modification sur Horodatage
->>>>>>> 985115df44ae53987e6f5a8601f58ec4c799312c
