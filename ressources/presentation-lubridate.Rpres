@@ -1,0 +1,227 @@
+Présentation du package "lubridate"
+========================================================
+author: Maxence Lagalle - SES86 Poitiers
+date: 20 décembre 2018 - Club R Insee Nouvelle-Aquitaine
+autosize: true
+
+Spécificités du travail avec des dates
+========================================================
+type: prompt
+
+Dans la plupart des logiciels et langages de programmation, le temps est considéré comme une simple valeur numérique à partir d'une date de référence.
+
+Pour R, cette "origine des temps" est le 1er janvier 1970, 00:00:00 UTC. En revanche, LibreOffice Calc utilise le 30 décembre 1899 sous Windows et le 1er janvier 1904 sous macOS. Microsoft Excel utilise le 1er janvier 1900... ces différences d'origine complexifient le traitement des données temporelles.
+
+Pour contourner ce problème, les indications temporelles sont souvent stockées sous un format textuel - par exemple "12/07/2014" - mais cela rend difficile la réalisation de calculs à partir de ces dates.
+
+Les fonctionnalités de base de R permettent en partie de traiter ces questions, mais au prix de contraintes de syntaxe et d'un manque de souplesse.
+
+Le package "lubridate"
+========================================================
+type: prompt
+
+**lubridate** est un package s'inscrivant dans le *tidyverse*, méta-package conçu pour créer une chaîne de traitement cohérente des données.
+
+Il permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
+
+Sa syntaxe est conçue pour s'intégrer naturellement dans le *tidyverse*, et ses fonctions sont totalement compatibles avec d'autres packages comme *dplyr* ou encore avec l'opérateur *pipe* (%>%).
+
+L'installation et le chargement s'effectuent à l'aide la commande suivante :
+
+```{r}
+#install.packages("lubridate") # ou install.packages("tidyverse")
+library(lubridate)
+```
+
+Travailler avec des données temporelles
+========================================================
+type: sub-section
+
+L'importation de données temporelles présentées au format texte avec *lubridate* s'effectue en deux temps :
+
+- Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heures (**h**), minutes (**m**), secondes (**s**).
+- Appel d'une fonction de *lubridate* reprenant l'ordre de ces éléments : **dmy**(), **dmy_hms**()...
+
+```{r}
+date_1 <- ("25/12/2015") # Jour/Mois/Année
+lubridate1 <- dmy(date_1)
+lubridate1
+```
+
+Importation de dates/heures - Exemples
+========================================================
+
+```{r}
+date_2 <- ("05-04-1988") # Mois-Jour-Année
+lubridate2 <- mdy(date_2)
+lubridate2
+```
+
+```{r}
+date_3 <- ("17 mars 2014 à 12h58") # Jour, mois, année, heures, minutes
+lubridate3 <- dmy_hm(date_3)
+lubridate3
+```
+
+Importation de dates/heures - Autres cas
+========================================================
+
+**lubridate** posède des fonctions **now** et **today** donnant respectivement la date du jour avec ou sans l'heure :
+
+```{r, echo=FALSE}
+now()
+today()
+```
+
+Il est également possible de convertir une date "décimale" :
+
+```{r}
+lubridate4 <- date_decimal(2018.84, tz = "CET") # tz = Fuseau Horaire - en France métro : CET
+lubridate4
+```
+
+Conversions entre les fuseaux horaires
+========================================================
+
+L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz** :
+
+```{r}
+with_tz(lubridate4, "America/Los_Angeles") # Liste des libellés reconnus : OlsonNames()
+```
+
+La modification du fuseau horaire associé à une date/heure sans la recalculer (par exemple, pour corriger une erreur de détection) s'effectue avec la fonction **force_tz** :
+
+```{r}
+lubridate3 <- force_tz(lubridate3, "Europe/Paris")
+lubridate3
+```
+
+Accéder aux éléments d'une date
+========================================================
+
+Une fois une date convertie en objet *date-time* par lubridate, chacun de ses éléments peuvent être consultés indvidiuellement avec les fonctions **year** (année), **month** (mois), **day** (jour), **wday** (jour de la semaine), **week** (numéro de semaine), **quater** (trimestre), **semester** (semestre), **hour** (heures), **minute** (minutes), **second** (secondes) :
+
+```{r}
+week(lubridate2)  # Il existe également isoweek, numéro de semaine selon la norme ISO 8601
+wday(lubridate2, label = TRUE, abbr = FALSE, week_start = 1) # label = afficher en texte, abbr = nom du jour en entier ou abrégé, week_start = 1er jour de la semaine (1 = Lundi)
+```
+
+Modifier les éléments d'une date
+========================================================
+
+Les éléments permettant d'accéder aux éléments d'une date permettent également de les modifier :
+
+```{r}
+second(lubridate3) <- 42
+year(lubridate3) <- 2009
+lubridate3
+```
+
+Ces opérations peuvent également être effectuées en une seule fois avec la fonction **update** :
+
+```{r}
+lubridate3 <- update(lubridate3, month = 5, day = 22, minute = 19)
+lubridate3
+```
+
+Modifier les éléments d'une date - Arrondis
+========================================================
+
+Une date peut également être modifiée en étant arrondie selon une unité grâce à la fonction **round_date** :
+
+```{r}
+round_date(lubridate1, unit = "month") # Unités : year, halfyear, season, quarter, bimonth, month, week, day, hour, minute, second
+```
+
+Il est également possible d'arrondir à l'unité inférieure avec **floor_date** ou supérieure avec **ceiling_date** :
+
+```{r}
+ceiling_date(lubridate2, unit = "year")
+```
+
+Faire des calculs avec les dates
+========================================================
+type: sub-section
+
+Les calculs impliquant des dates peuvent s'effectuer selon trois approches :
+
+- Une approche basée sur les **périodes**, dans laquelle on ajoute ou retire à une date une période de temps (exprimée dans une unité) sur la base du calendrier, donc en suivant l'influence du passage à l'heure d'été/hiver ou encore d'une année bissextile. Il s'agit d'une notion de temps *social*.
+- Une approche basée sur les **durées**, c'est à dire une quantité de temps ramenée à son équivalent en secondes, et ignorant par conséquent l'influence des modifications de calendrier. Il s'agit d'une notion de temps *physique*.
+- Une approche basée sur l'**invervalle** entre deux dates, permettant de travailler aussi bien sur la longueur de cette intervalle que d'effectuer d'autres opérations (par exemple, détecter si une date se trouve dans un intervalle).
+
+Faire des calculs avec les dates - Périodes
+========================================================
+
+Les fonctions permettant de travailler avec des périodes sont les mêmes que celles permettant d'accéder aux composants d'une date, au pluriel. Par exemple, years permet d'ajouter ou de retirer une année :
+
+```{r}
+dmy("01/01/2016") + years(1)
+dmy_hms("01/11/2015 12:45:23",tz="Europe/Paris") + years(2) - days(18) + hours(7) + minutes(22) - seconds(45)
+```
+
+Faire des calculs avec les dates - Durées
+========================================================
+
+Les fonctions permettant de travailler avec des durées portent le même nom que celles permettant de manipuler des périodes, précédées de la lettre d. Ainsi, dyears permet d'ajouter ou de retirer un nombre de secondes équivalent à une année. A noter qu'il n'existe pas de dmonths, puisque la durée d'un mois n'est pas constante :
+
+```{r}
+dmy("01/01/2016") + dyears(1)
+dmy_hms("01/11/2015 12:45:23",tz="Europe/Paris") + dyears(2) - ddays(18) + dhours(7) + dminutes(22) - dseconds(45)
+```
+
+Faire des calculs avec les dates - Intervalles
+========================================================
+
+Un intervalle entre deux dates se déclare à l'aide de la fonction **interval** ou du symbole **%--%** :
+
+```{r}
+int1 <- interval(dmy("01/01/2016"), dmy("01/01/2017"))
+int1
+int2 <- dmy_hms("01/11/2015 12:45:23",tz="Europe/Paris") %--% dmy_hms("14/10/2017 20:06:38",tz="Europe/Paris")
+int2
+```
+
+Faire des calculs avec les dates - Intervalles / Longueur
+========================================================
+
+La fonction **int_length** permet de récupérer la longueur d'un intervalle, exprimée en secondes (c-à-d. comme une durée) :
+
+```{r}
+(int_length(int2))
+```
+
+Cette longueur/durée peut ensuite être transformée en période grâce à la fonction **seconds_to_period** :
+```{r}
+seconds_to_period(int_length(int2))
+```
+
+Faire des calculs avec les dates - Intervalles / Inclusion
+========================================================
+
+L'opérateur **%within%** permet de déterminer si une date se trouve ou non dans un intervalle :
+
+```{r}
+dmy("01/03/2017") %within% int1
+dmy("01/03/2017") %within% int2
+```
+
+Horodatage
+========================================================
+type: sub-section
+
+*lubridate* permet également d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de "timbres", grâce à la fonction **stamp**:
+
+```{r}
+timbre <- stamp("Informations vérifiées le 17 janvier 2018 à 14h35", orders = "dmy hm") #orders permet de préciser l'ordre dans lequel les informations de date/heure sont mentionnées
+timbre(dmy_hms("30/03/2017 15:23:45"))
+```
+
+Ressources
+========================================================
+type: prompt
+
+* Documentation de *lubridate* sur le site du projet tidyverse (anglais) : <https://lubridate.tidyverse.org/index.html>
+* Feuille de référence ("cheatsheet") des principales fonctionnalités du package (anglais) : <https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf>
+* Article du blog "R-atique" consacré à lubridate (français): <http://perso.ens-lyon.fr/lise.vaudor/gerer-des-dates-avec-lubridate-un-jeu-denfant/>
+* Document "Manipuler les dates et les heures" sur Wikibooks (français) : <https://fr.wikibooks.org/wiki/Programmer_en_R/Manipuler_les_dates_et_les_heures>
+* Sources de cette présentation sur la plateforme GitLab du SSP-Lab (interne) : <https://git.stable.innovation.insee.eu/club-r/pres-lubridate>
