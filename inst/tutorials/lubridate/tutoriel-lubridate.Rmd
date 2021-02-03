@@ -70,11 +70,6 @@ add <- function() {
   
 }
 ```
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
-```
 
 ## Topic 2
 
@@ -121,4 +116,3 @@ quiz(
 ### Calculs avec des dates
 ### Horodatage
 
-Test de modification sur Horodatage
