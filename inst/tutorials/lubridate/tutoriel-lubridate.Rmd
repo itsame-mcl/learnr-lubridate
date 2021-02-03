@@ -28,24 +28,89 @@ L'installation et le chargement s'effectuent à l'aide la commande suivante :
 library(lubridate)
 ```
 
-## Importation de dates/heures (Kévin)
+## Importation de dates/heures
 
 ### Comment ça marche ? 
 
 L'importation de données temporelles avec **lubridate** s'effectue en deux temps :
 
-* Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heures (**h**), minutes (**m**), secondes (**s**).
-* Appel d'une fonction de **lubridate** reprenant l'ordre de ces éléments : 
+* Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heure (**h**), minute (**m**), seconde (**s**).
+* Appel de la fonction de **lubridate** reprenant l'ordre de ces éléments : 
+  + **ymd_hms**() - Année Mois Jour Heure Minute Seconde -
   + **dmy**() - Jour Mois Année -
   + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
+  + Toute autre combinaison avec **y**, **m**, **d**, **h**, **m** et **s**.
+  
+**lubridate** posède également des fonctions **now**() et **today**() donnant respectivement la date du jour avec ou sans l'heure.
+
+### Exemples
 
 ```{r, echo=TRUE}
 date_1 <- ("25/12/2015") # Jour/Mois/Année
 lubridate1 <- dmy(date_1)
 lubridate1
+
+date_2 <- ("2020-24-12") # Année/Jour/Mois
+lubridate2 <- ydm(date_2)
+lubridate2
+
+date_3 <- ("12 Janvier 2021 à 15:30:05") # Jour/Mois/Année/Heure/Minute/Seconde
+lubridate3 <- dmy_hms(date_3)
+lubridate3
+
+now() # Date et heure actuelle
+today() # Date actuelle seulement
 ```
 
-## Conversion entre les fuseaux horaires (Kévin)
+### Exercices 
+
+Pour chaque exercice, choisissez la fonction du package "lubridate" correspondant 
+
+```{r dateimport1, exercise=TRUE, exercise.lines = 3}
+date_1 <- ("13/01/2021")
+lubridate1 <- # ICI code pour importer la date
+lubridate1
+```
+```{r dateimport1-solution}
+date_1 <- ("13/01/2021")
+lubridate1 <- dmy(date_1)
+lubridate1
+```
+```{r dateimport2, exercise=TRUE, exercise.lines = 3}
+date_2 <- ("25-2021-10")
+lubridate2 <- # ICI code pour importer la date
+lubridate2
+```
+```{r dateimport2-solution}
+date_2 <- ("25-2021-10")
+lubridate2 <- dym(date_2)
+lubridate2
+```
+```{r dateimport3, exercise=TRUE, exercise.lines = 3}
+date_3 <- ("25 Février 2018 à 12H30")
+lubridate3 <- # ICI code pour importer la date
+lubridate3
+```
+```{r dateimport3-solution}
+date_3 <- ("25 Février 2018 à 12H30")
+lubridate3 <- dmy_hm(date_3)
+lubridate3
+```
+
+## Conversion entre les fuseaux horaires
+
+L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz** :
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+# Importation de la date (Cf. paragraphe précédent)
+date_3 <- ("25 Février 2018 à 12H30")
+lubridate3 <- dmy_hm(date_3)
+
+# Conversion dans un autre fuseau horaire
+date_convertie <- with_tz(lubridate3, "America/Los_Angeles") # Liste des libellés reconnus : OlsonNames()
+date_convertie
+```
+
 
 ## Manipulation des dates 
 
