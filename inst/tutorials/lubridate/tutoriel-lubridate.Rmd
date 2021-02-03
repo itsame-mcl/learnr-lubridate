@@ -107,3 +107,9 @@ quiz(
 )
 ```
 
+## Manipulation des dates
+### Accès aux éléments d'une date
+### Modification d'une date
+### Calculs avec des dates
+### Horodatage
+
