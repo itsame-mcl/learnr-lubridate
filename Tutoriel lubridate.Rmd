@@ -1,0 +1,109 @@
+---
+title: "Tutorial lubridate"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+Dans la plupart des logiciels et langages de programmation, le temps est considéré comme une simple valeur numérique à partir d'une date de référence.
+
+Pour R, cette "origine des temps" est le 1er janvier 1970, 00:00:00 UTC. En revanche, LibreOffice Calc utilise le 30 décembre 1899 sous Windows et le 1er janvier 1904 sous macOS. Microsoft Excel utilise le 1er janvier 1900... ces différences d'origine complexifient le traitement des données temporelles.
+
+Pour contourner ce problème, les indications temporelles sont souvent stockées sous un format textuel - par exemple "12/07/2014" - mais cela rend difficile la réalisation de calculs à partir de ces dates.
+
+Les fonctionnalités de base de R permettent en partie de traiter ces questions, mais au prix de contraintes de syntaxe et d'un manque de souplesse.
+
+Le package **lubridate** permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
+
+L'installation et le chargement s'effectuent à l'aide la commande suivante :
+
+```{r installpack, message=FALSE, warning=FALSE, echo=TRUE}
+#install.packages("lubridate")
+library(lubridate)
+```
+
+
+## Importation de dates/heures
+
+### Comment ça marche ? 
+
+L'importation de données temporelles avec **lubridate** s'effectue en deux temps :
+
+* Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heures (**h**), minutes (**m**), secondes (**s**).
+* Appel d'une fonction de **lubridate** reprenant l'ordre de ces éléments : 
+  + **dmy**() - Jour Mois Année -
+  + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
+  
+```{r, echo=TRUE}
+date_1 <- ("25/12/2015") # Jour/Mois/Année
+lubridate1 <- dmy(date_1)
+lubridate1
+```
+
+### Exercise 
+
+*Here's a simple exercise with an empty code chunk provided for entering the answer.*
+
+Write the R code required to add two plus two:
+
+```{r two-plus-two, exercise=TRUE}
+
+```
+
+### Exercise with Code
+
+*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+
+Now write a function that adds any two numbers and then call it:
+
+```{r add-function, exercise=TRUE, exercise.lines = 5}
+add <- function() {
+  
+}
+```
+
+## Topic 2
+
+### Exercise with Hint
+
+*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+
+Modify the following code to limit the number of rows printed to 5:
+
+```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
+mtcars
+```
+
+```{r print-limit-hint}
+head(mtcars)
+```
+
+### Quiz
+
+*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
+
+Some questions to verify that you understand the purposes of various base and recommended R packages:
+
+```{r quiz}
+quiz(
+  question("Which package contains functions for installing other R packages?",
+    answer("base"),
+    answer("tools"),
+    answer("utils", correct = TRUE),
+    answer("codetools")
+  ),
+  question("Which of the R packages listed below are used to create plots?",
+    answer("lattice", correct = TRUE),
+    answer("tools"),
+    answer("stats"),
+    answer("grid", correct = TRUE)
+  )
+)
+```
+
