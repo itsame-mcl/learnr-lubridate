@@ -39,13 +39,14 @@ L'importation de données temporelles avec **lubridate** s'effectue en deux temp
 * Appel d'une fonction de **lubridate** reprenant l'ordre de ces éléments : 
   + **dmy**() - Jour Mois Année -
   + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
-  
+
 ```{r, echo=TRUE}
 date_1 <- ("25/12/2015") # Jour/Mois/Année
 lubridate1 <- dmy(date_1)
 lubridate1
 ```
 
+<<<<<<< HEAD
 ## Conversion entre les fuseaux horaires (Kévin)
 
 ## Manipulation des dates 
@@ -59,10 +60,15 @@ lubridate1
 
 
 ### Exercise 
+=======
+### Exercice 
+>>>>>>> 985115df44ae53987e6f5a8601f58ec4c799312c
 
 *Here's a simple exercise with an empty code chunk provided for entering the answer.*
 
 Write the R code required to add two plus two:
+
+Ajout d'un test
 
 ```{r two-plus-two, exercise=TRUE}
 
@@ -72,8 +78,14 @@ Write the R code required to add two plus two:
 
 *Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
 
-Now write a function that adds any two numbers and then call it:
+Now write a that adds any two numbers and then call it:
 
+
+```{r add-function, exercise=TRUE, exercise.lines = 5}
+add <- function() {
+  
+}
+```
 ```{r add-function, exercise=TRUE, exercise.lines = 5}
 add <- function() {
   
@@ -118,3 +130,14 @@ quiz(
   )
 )
 ```
+<<<<<<< HEAD
+=======
+
+## Manipulation des dates
+### Accès aux éléments d'une date
+### Modification d'une date
+### Calculs avec des dates
+### Horodatage
+
+Test de modification sur Horodatage
+>>>>>>> 985115df44ae53987e6f5a8601f58ec4c799312c
