@@ -48,8 +48,57 @@ lubridate1
 ## Conversion entre les fuseaux horaires (Kévin)
 
 ## Manipulation des dates 
+
+[Comment ajouter un fichier CSS !? ](https://education.rstudio.com/blog/2020/05/learnr-for-remote/#2-customized-hints-and-solutions)
+
+Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs.
+
 ### Accès aux éléments d'une date (Alanna)
+Dans le package `lubridate` il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
+
+Prenons un exemple que nous garderons dans toute la suite de cette partie comme le 1er septembre 1999. Ici on affecte à la variable `date` la chaîne suivante : `01-09-1999`
+```{r, echo=TRUE}
+date <- "01-09-1999" # jour-mois-année
+date <- dmy(date) # convertit le string au format date y-m-d (d : day, m : month, y : year)
+date
+```
+
+On voit bien que l'on retrouve le format usuel des dates en R : année-mois-jour. De la même manière on pourrait affecter la variable `date` d'une autre façon comme l'exemple ci-dessous.
+
+```{r, echo=TRUE}
+date <- "1999-01-09" # année-jour-mois
+date <- ydm(date) # convertit le string au format date y-m-d (d : day, m : month, y : year)
+date
+```
+
+Comme vu précedemment, une date peut être composée de différents éléments. Nous allons voir quelques fonctions comme `day`, `week`, `year` qui retournent respectivement le jour du mois, le numéro de la semaine et l'année
+```{r, echo=TRUE}
+day(date) # retourne le jour
+week(date) # retourne le numéro de la semaine
+year(date) # retourne l'année
+```
+
+```{r quiz}
+quiz(
+  question("Quel est le format usuel de lubridate ?",
+    answer("yyyy-dd-mm"),
+    answer("dd-mm-yyyy"),
+    answer("yyyy-mm-dd", correct = TRUE),
+    answer("dd-mm-yy"),
+    allow_retry = TRUE
+  ),
+  question("Parmi ces commandes, lequelles sont vraies?",
+    answer("1", correct = TRUE),
+    answer("2"),
+    answer("3"),
+    answer("4", correct = TRUE),
+    allow_retry = TRUE
+  )
+)
+```
+
 ### Modification d'une date (Alanna)
+
 
 ### Calculs avec des dates (Maxence)
 
@@ -94,25 +143,3 @@ mtcars
 head(mtcars)
 ```
 
-### Quiz
-
-*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
-
-Some questions to verify that you understand the purposes of various base and recommended R packages:
-
-```{r quiz}
-quiz(
-  question("Which package contains functions for installing other R packages?",
-    answer("base"),
-    answer("tools"),
-    answer("utils", correct = TRUE),
-    answer("codetools")
-  ),
-  question("Which of the R packages listed below are used to create plots?",
-    answer("lattice", correct = TRUE),
-    answer("tools"),
-    answer("stats"),
-    answer("grid", correct = TRUE)
-  )
-)
-```
