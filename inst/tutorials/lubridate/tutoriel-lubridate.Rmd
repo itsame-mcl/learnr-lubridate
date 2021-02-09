@@ -30,8 +30,6 @@ library(lubridate)
 
 ## Importation de dates/heures
 
-### Comment ça marche ? 
-
 L'importation de données temporelles avec **lubridate** s'effectue en deux temps :
 
 * Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heure (**h**), minute (**m**), seconde (**s**).
@@ -41,14 +39,16 @@ L'importation de données temporelles avec **lubridate** s'effectue en deux temp
   + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
   + Toute autre combinaison avec **y**, **m**, **d**, **h**, **m** et **s**.
   
-**lubridate** posède également des fonctions **now**() et **today**() donnant respectivement la date du jour avec ou sans l'heure.
+Les dates retournées par toutes les fonctions de **lubridate** sont au format "yyyy-mm-dd" (dd : day, mm : month, yyyy : year).
+  
+**Lubridate** posède également des fonctions **now**() et **today**() donnant respectivement la date du jour avec ou sans l'heure.
 
 ### Exemples
 
 ```{r, echo=TRUE}
 date_1 <- ("25/12/2015") # Jour/Mois/Année
 lubridate1 <- dmy(date_1)
-lubridate1
+lubridate1 # Notre date est bien importée au format yyyy-mm-dd
 
 date_2 <- ("2020-24-12") # Année/Jour/Mois
 lubridate2 <- ydm(date_2)
@@ -64,7 +64,7 @@ today() # Date actuelle seulement
 
 ### Exercices 
 
-Pour chaque exercice, choisissez la fonction du package "lubridate" correspondant 
+Pour chaque exercice, choisissez la fonction du package **lubridate** permettant l'import correct de la date. 
 
 ```{r dateimport1, exercise=TRUE, exercise.lines = 3}
 date_1 <- ("13/01/2021")
@@ -97,20 +97,65 @@ lubridate3 <- dmy_hm(date_3)
 lubridate3
 ```
 
+```{r importquiz}
+quiz(
+  question("Quel est le format de date retourné par les fonctions lubridate ?",
+    answer("yyyy-dd-mm"),
+    answer("dd-mm-yyyy"),
+    answer("yyyy-mm-dd", correct = TRUE),
+    answer("dd-mm-yy"),
+    allow_retry = TRUE
+  )
+)
+```
+
 ## Conversion entre les fuseaux horaires
 
-L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz** :
+La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction **OlsonNames()**.
+
+L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz**.
+
+### Exemples
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+head(OlsonNames())
+```
 
 ```{r, message=FALSE, warning=FALSE, echo=TRUE}
 # Importation de la date (Cf. paragraphe précédent)
-date_3 <- ("25 Février 2018 à 12H30")
-lubridate3 <- dmy_hm(date_3)
+date <- dmy_hm("25 Février 2018 à 12H30")
 
-# Conversion dans un autre fuseau horaire
-date_convertie <- with_tz(lubridate3, "America/Los_Angeles") # Liste des libellés reconnus : OlsonNames()
+# Conversion dans le fuseau horaire de Los Angeles
+date_convertie <- with_tz(date, "America/Los_Angeles")
 date_convertie
+
+# Conversion dans le fuseau horaire de Abidjan
+date_convertie2 <- with_tz(date, "Africa/Abidjan")
+date_convertie2
 ```
 
+### Exercices
+Convertissez la date suivante dans le fuseau horaire de Asmera :
+```{r dateconvert1, exercise=TRUE, exercise.lines = 3}
+date_1 <- dmy_hm("25 Février 2018 à 12H30")
+date_convertie_1 <- # ICI code pour convertir la date dans le fuseau horaire de Asmera
+date_convertie_1
+```
+```{r dateconvert1-solution}
+date_1 <- dmy_hm("25 Février 2018 à 12H30")
+date_convertie_1 <- with_tz(date_1, "Africa/Asmera")
+date_convertie_1
+```
+Convertissez maintenant la date dans le fuseau horaire de Los Angeles :
+```{r dateconvert2, exercise=TRUE, exercise.lines = 3}
+date_2 <- dmy_hm("25 Février 2018 à 12H30")
+date_convertie_2 <- # ICI code pour convertir la date dans le fuseau horaire de Los Angeles
+date_convertie_2
+```
+```{r dateconvert2-solution}
+date_convertie_2 <- with_tz(date_2, "America/Los_Angeles")
+date_convertie_2
+```
 
 ## Manipulation des dates 
 
@@ -168,43 +213,3 @@ quiz(
 ### Calculs avec des dates (Maxence)
 
 ## Horodatage (Maxence)
-
-### Exercise 
-
-*Here's a simple exercise with an empty code chunk provided for entering the answer.*
-
-Write the R code required to add two plus two:
-
-Ajout d'un test
-
-```{r two-plus-two, exercise=TRUE}
-
-```
-
-### Exercise with Code
-
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
-
-Now write a that adds any two numbers and then call it:
-
-
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
-```
-
-### Exercise with Hint
-
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
-
-Modify the following code to limit the number of rows printed to 5:
-
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
-```
-
-```{r print-limit-hint}
-head(mtcars)
-```
-
