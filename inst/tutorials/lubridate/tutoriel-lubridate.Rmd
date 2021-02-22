@@ -2,6 +2,7 @@
 title: "Tutorial lubridate"
 output: learnr::tutorial
 runtime: shiny_prerendered
+description: "Tutoriel dédié à l'apprentissage des bases du package de gestion des dates : lubridate"
 ---
 
 ```{r setup, include=FALSE}
