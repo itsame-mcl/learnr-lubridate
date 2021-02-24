@@ -29,7 +29,7 @@ L'installation et le chargement s'effectuent à l'aide la commande suivante :
 library(lubridate)
 ```
 
-## Importation de dates/heures
+## Importation de dates
 
 L'importation de données temporelles avec **lubridate** s'effectue en deux temps :
 
@@ -46,7 +46,7 @@ Les dates retournées par toutes les fonctions de **lubridate** sont au format "
 
 ### Exemples
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, comment=''}
 date_1 <- ("25/12/2015") # Jour/Mois/Année
 lubridate1 <- dmy(date_1)
 lubridate1 # Notre date est bien importée au format yyyy-mm-dd
@@ -118,11 +118,11 @@ L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à
 
 ### Exemples
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE, comment=''}
 head(OlsonNames())
 ```
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE, comment=''}
 # Importation de la date (Cf. paragraphe précédent)
 date <- dmy_hm("25 Février 2018 à 12H30")
 
@@ -164,52 +164,136 @@ date_convertie_2
 
 Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs.
 
-### Accès aux éléments d'une date (Alanna)
+### Accès aux éléments d'une date
 
 Dans le package `lubridate` il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
 Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
+|  Date | Annee | Mois | Semaine | Jour | Heure |
+|:-----:|:-----:|:-----:|:-----:|:----:|:---:|
+|`date`|`year` `leap_year` `semester` `quarter`|`month`|`week`|`day` `wday` `qday` `yday` `hour`|`minute` `second` `am` `pm` `dst`|
+
+**Date**
+
 * `date` : date au format année-mois-jour
-* `year` : année
 * `month` : mois
+* `week` : numéro de la semaine 
+
+**Annee**
+
+* `year` : année
+* `leap_year` : est-ce une année bisextile ?
 * `semester` : numéro du semestre
 * `quarter` : numéro du trimestre
-* `week` : numéro de la semaine 
+
+
+**Jour** 
+
+* `hour` : heure
 * `day` : jour du mois
 * `wday` : jour de la semaine
 * `qday` : jour du trimestre
-* `hour` : heure
+* `yday` : jour de l'année
+  
+
+**Heure**
+
 * `minute` : minute
 * `second` : seconde
 * `am` : est-ce le matin ?
 * `pm` : est-ce l'après-midi ?
 * `dst` : est-ce l'heure d'été ?
-* `leap_year` : est-ce une année bisextile ?
-* etc.
 
-**Expliquer la syntaxe des fonctions ainsi que les sorties **
+Toutes les fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette partie.
 
-Il existe également quelques variantes pour permettre de mettre une date au format ISO comme `isoyear` ou `isomonth`.
+Prenons un exemple que nous garderons dans toute la suite de cette partie comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. 
+
+```{r exemple-1999-09_01, include=FALSE}
+date <- dmy_hms("01-09-1999 11:59:59")
+```
+
+Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
+
+```{r examples-data-management, echo=TRUE, include=TRUE, comment=''}
+# l'heure
+hour(date)
+# le jour
+day(date) 
+# le numéro de la semaine
+week(date) 
+# l'année
+year(date) 
+```
+
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `TRUE` pour `abbr`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais attention ces options ne fonctionnent pas sur toutes les fonctions, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+
+```{r examples-labels-abbr, comment=''}
+# nombre
+month(date) 
+# label abrévié
+month(date, label = T)
+# label non abrévié
+month(date, label = T, abbr = F) 
+```
+
+Cela affiche également les autres mois et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
+
+A cela s'ajoute deux autres options : `week_start` et `locale`. L'option `week_start` défini le début de la semaine. Par convention, -1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
+
+Deux fonctions ont un paramètre supplémentaire. Il s'agit des fonctions `quarter` et `semester` qui ont la syntaxe suivante : `fonction(x, with_year = FALSE)`. Le second paramètre indique si l'on veut concaténer ou non le numéro du semestre avec l'année. Par exemple, si on veut connaître le semestre du 1er janvier 2020 en utilisant `with_year = TRUE` on obtiendra 2020.1 car le 01/01/2020 est un jour du premier semestre.
+
+Voici quelques exemples avec notre date du 01/09/1999.
+
+```{r examples-quarter-semester, echo=TRUE, include=TRUE, comment=''}
+# trimestre sans année
+quarter(date, with_year = F) 
+# trimestre avec année
+quarter(date, with_year = T) 
+# semestre sans année
+semester(date, with_year = F) 
+# semestre avec année
+semester(date, with_year = T) 
+```
+
+
+On remarque que toutes les fonctions retournent un nombre qui correspond soit à un numéro soit à un nombre d'heures, de jours, etc ou un label. Seules les fonctions `leap_year`, `am`, `pm` et `dst` renvoient un booléen (`True` ou `False`) comme le montre les exemples ci-dessous.
+
+```{r exemples-data-management-bool, echo=TRUE, include=TRUE, comment=''}
+# année bisextile ?
+leap_year(date) 
+# matin ?
+am(date) 
+# après-midi ?
+pm(date) 
+# heure d'été ?
+dst(date) 
+```
+
+
+
+**NB** Il existe également quelques variantes pour permettre de mettre une date au format ISO comme `isoyear` ou `isomonth`.
 
 **Parler de la fonction UPDATE ! et de `month(date + months(0:11), label = T, abbr = F)`**
 
-Prenons un exemple que nous garderons dans toute la suite de cette partie comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la chaîne suivante : `01-09-1999 11:59:59` et la convertissons en date comme précédemment. 
 
-#### Exemples
-
-```{r date-1er-sept-99, echo=TRUE, include=TRUE, comment=''}
-date <- dmy_hms("01-09-1999 11:59:59") # jour-mois-année convertit au format yyyy-mm-dd
-date
-day(date) # retourne le jour
-am(date) # matin ?
-pm(date) # après-midi ?
-week(date) # retourne le numéro de la semaine
-quarter(date, with_year = F) # trimestre
-quarter(date, with_year = T) # trimestre
-semester(date, with_year = F) # semestre
-semester(date, with_year = T) # semestre
-year(date) # retourne l'année
+```{r quiz-compenents-date}
+quiz(
+  question("Question",
+    answer("1"),
+    answer("2"),
+    answer("3", correct = TRUE),
+    answer("4"),
+    allow_retry = TRUE
+  ),
+  question("Parmi ces commandes, lequelles sont vraies?",
+    answer("1", correct = TRUE),
+    answer("2"),
+    answer("3"),
+    answer("4", correct = TRUE),
+    allow_retry = TRUE
+  )
+)
 ```
 
 
@@ -245,24 +329,6 @@ day(date)
 ```
 
 
-```{r quiz-compenents-date}
-quiz(
-  question("Question",
-    answer("1"),
-    answer("2"),
-    answer("3", correct = TRUE),
-    answer("4"),
-    allow_retry = TRUE
-  ),
-  question("Parmi ces commandes, lequelles sont vraies?",
-    answer("1", correct = TRUE),
-    answer("2"),
-    answer("3"),
-    answer("4", correct = TRUE),
-    allow_retry = TRUE
-  )
-)
-```
 
 ### Modification d'une date (Alanna)
 
