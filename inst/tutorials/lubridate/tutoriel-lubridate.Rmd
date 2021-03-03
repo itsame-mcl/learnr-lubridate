@@ -205,15 +205,14 @@ Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 * `pm` : est-ce l'après-midi ?
 * `dst` : est-ce l'heure d'été ?
 
-Toutes les fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette partie.
+Toutes les fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
 
-Prenons un exemple que nous garderons dans toute la suite de cette partie comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. 
+Prenons un exemple que nous garderons dans toute la suite de cette section comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
+
 
 ```{r exemple-1999-09_01, include=FALSE}
 date <- dmy_hms("01-09-1999 11:59:59")
 ```
-
-Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
 
 ```{r examples-data-management, echo=TRUE, include=TRUE, comment=''}
 # l'heure
@@ -226,9 +225,9 @@ week(date)
 year(date) 
 ```
 
-Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `TRUE` pour `abbr`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais attention ces options ne fonctionnent pas sur toutes les fonctions, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
-```{r examples-labels-abbr, comment=''}
+```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
 month(date) 
 # label abrévié
@@ -257,7 +256,7 @@ semester(date, with_year = T)
 ```
 
 
-On remarque que toutes les fonctions retournent un nombre qui correspond soit à un numéro soit à un nombre d'heures, de jours, etc ou un label. Seules les fonctions `leap_year`, `am`, `pm` et `dst` renvoient un booléen (`True` ou `False`) comme le montre les exemples ci-dessous.
+On remarque que toutes les fonctions retournent un nombre qui correspond soit à un numéro soit à un nombre d'heures, de jours, etc. (ou avec un label). Seules les fonctions `leap_year`, `am`, `pm` et `dst` renvoient un booléen (`True` ou `False`) comme le montrent les exemples ci-dessous.
 
 ```{r exemples-data-management-bool, echo=TRUE, include=TRUE, comment=''}
 # année bisextile ?
@@ -271,19 +270,18 @@ dst(date)
 ```
 
 
-
 **NB** Il existe également quelques variantes pour permettre de mettre une date au format ISO comme `isoyear` ou `isomonth`.
 
-**Parler de la fonction UPDATE ! et de `month(date + months(0:11), label = T, abbr = F)`**
-
+En manipulant la fonction `month` il est également possible d'afficher tous les mois de l'année. En effet, si on prend le mois de janvier auquel on ajoute les mois restant au travers de la ligne de commande `month(dmy("01-01-2021") + months(0:11), label = T, abbr = F)`. Le resultat sera `janvier février mars avril mai juin juillet août septembre octobre novembre décembre`. Il est également possible de faire ces manipulations sur toutes les fonctions qui prennent en paramètre un label.
 
 ```{r quiz-compenents-date}
 quiz(
-  question("Question",
-    answer("1"),
-    answer("2"),
-    answer("3", correct = TRUE),
-    answer("4"),
+  question("Quel(s) paramètre(s) prend la fonction `day`?",
+    answer("week_start"),
+    answer("label"),
+    answer("une date", correct = TRUE),
+    answer("locaale"),
+    answer("abbr"),
     allow_retry = TRUE
   ),
   question("Parmi ces commandes, lequelles sont vraies?",
@@ -299,24 +297,24 @@ quiz(
 
 #### Exercices
 
-Ecrire la date du 15 mai 1970 puis à l'aide d'une fonction extraire le mois (numéro et nom)
-```{r 15-05-1970-month, exercise=TRUE, exercise.lines = 5}
+Ecrire la date du 15 février 1970 puis à l'aide d'une fonction extraire le mois (numéro et nom).
+```{r 15-02-1970-month, exercise=TRUE, exercise.lines = 5}
 
 ```
 
-```{r 15-05-1970-month-solution}
-date <- dmy("15-05-1970")
+```{r 15-02-1970-month-solution}
+date <- dmy("15-02-1970")
 month(date, label = T)
 month(date, label = T, abbr = F)
 ```
 
-**Afficher tous les mois de l'année à l'aide d'une commande --> expliquer un peu mieux + en parler plus haut dans le "cours"**
-```{r months, exercise=TRUE, exercise.lines = 3}
+Afficher tous les jours de la semaine à l'aide d'une commande en commençant par lundi. (*Remarque* Le 1er février 2021 est un lundi.)
+```{r days, exercise=TRUE, exercise.lines = 3}
 
 ```
 
-```{r months-solution}
-month(date + months(0:11), label = T, abbr = F)
+```{r days-solution}
+wday(dmy("01-02-2021") + wday(0:6), label = T, abbr = F)
 ```
 
 Ennoncé
@@ -331,6 +329,14 @@ day(date)
 
 
 ### Modification d'une date (Alanna)
+
+**Parler de la fonction UPDATE ! **
+
+Exemples de manipulations de dates
+
+`years(2017) + months(2) + days(3)`
+
+`today() - (months(2) + days(3))`
 
 
 ### Calculs avec des dates (Maxence)
