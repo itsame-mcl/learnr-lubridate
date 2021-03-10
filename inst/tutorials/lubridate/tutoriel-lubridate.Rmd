@@ -7,6 +7,7 @@ description: "Tutoriel dédié à l'apprentissage des bases du package de gestio
 
 ```{r setup, include=FALSE}
 library(learnr)
+library(lubridate)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -339,6 +340,79 @@ Exemples de manipulations de dates
 `today() - (months(2) + days(3))`
 
 
-### Calculs avec des dates (Maxence)
+## Durées et intervalles
+
+Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des **périodes**, c'est à dire des variations temporelles au sens du temps *légal*. Cependant, le package **lubridate** permet également de réaliser des calculs sur des *durées* et des *intervalles*.
+
+### Durées
+
+Une **durée** représente une quantité exacte de secondes. Elle ne dépend pas passage à l'heure d'été ou d'hiver, ni des secondes intercalaires qui sont parfois ajoutées pour prendre en compte la durée réelle de la rotation de la terre ou des années bisextiles.
+
+Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par rapport aux fonctions permettant d'accéder aux éléments d'une date, on ajoute également un **s** en suffixe, comme pour les périodes. Par exemple :
+```{r examples-durations, echo=TRUE, comment=''}
+# heures
+dd1 <- dhours(4)
+dd1
+# semaines
+dd2 <- dweeks(2)
+dd2
+# millisecondes
+dd3 <- dmilliseconds(2850)
+dd3
+```
+
+Comme une période, une durée peut être ajoutée ou retranchée à une date, le résultat est alors reconverti en temps légal :
+```{r examples-calc-durations, echo=TRUE, comment=''}
+# Ajout d'une durée de 2 heures, le 28 mars 2021 02h00 étant le début de l'heure d'été
+cd1 <- ymd_hm("2021-03-28 01:30",tz="Europe/Paris") + dhours(2)
+cd1 # On remarque que l'heure affichée est 04h30 et non 03h30
+# Retrait d'une durée d'un an, l'année 2020 étant bisextile
+cd2 <- ymd_hm("2020-07-01 00:00") - dyears(1)
+cd2 # la durée physique d'une année est de 365 jours et 6 heures, d'où l'heure affichée de 18h00
+# Ajout d'une durée de 120 minutes, le 31 octobre 2021 03h00 étant le début de l'heure d'hiver 
+cd3 <- ymd_hm("2021-10-31 01:30",tz="Europe/Paris") + dminutes(120)
+cd3 # On remarque que l'heure affichée est 02h30 et non 03h30
+```
+
+A noter qu'en l'absence de précision d'un fuseau horaire, le temps UTC s'applique. Or, ce dernier est insensible au passage à l'heure d'été ou d'hiver.
+```{r examples-calc-durations-utc, echo=TRUE, comment=''}
+# Ajout d'une durée de 2 heures, le 28 mars 2021 02h00 étant le début de l'heure d'été
+cd4 <- ymd_hm("2021-03-28 01:30") + dhours(2)
+cd4 # Ici, l'heure affichée est 03h30, car le temps UTC ne varie pas
+```
+
+```{r quiz-compenents-durations}
+quiz(
+  question("Lesquelles de ces instructions correspondent à une durée de 10800 secondes ?",
+    answer("dhours(3)", correct = TRUE),
+    answer("minutes(180)"),
+    answer("second(10800)"),
+    answer("ddays(1/8)", correct = TRUE),
+    answer("dhours(4) - dminutes(60)", correct = TRUE),
+    allow_retry = TRUE
+  ),
+  question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + ddays(2) ?",
+    answer("2019-04-01 CEST"),
+    answer("2019-04-01 01:00:00 CEST", correct = TRUE),
+    answer("2019-04-01 01:00:00 UTC"),
+    answer("2019-04-01 00:00:00 CEST"),
+    allow_retry = TRUE
+  )
+)
+```
+
+#### Exercice
+
+A partir du 25 mars 2021, 12h00 (heure de Paris), ajoutez la durée permettant d'arriver au 1er avril 2021, 18h30 (heure de Paris)
+```{r durationexo, exercise=TRUE, exercise.lines = 3}
+date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
+date_arrivee <- # ICI code pour ajouter la durée
+date_arrivee
+```
+```{r durationexo-solution}
+date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
+date_arrivee <- date_depart + ddays(6) + dhours(5) + dminutes(30)
+date_arrivee
+```
 
 ## Horodatage (Maxence)
