@@ -456,4 +456,42 @@ i6 <- int_shift(i4,days(15))
 i6
 ```
 
+```{r quiz-intervals}
+quiz(
+  question("Lesquelles de ces instructions créent un intervalle du 1er au 8 janvier 2021 ?",
+    answer("ymd(2021-01-01)--ymd(2021-01-08)"),
+    answer("ymd(2021-01-01)%--%ymd(2021-01-08)", correct = TRUE),
+    answer("interval(ymd(2021-01-01),ymd(2021-01-08))", correct = TRUE),
+    answer("ymd(2021-01-01)%within%ymd(2021-01-08)"),
+    answer("ymd(2021-01-01)%--%ymd(2021-08-01)"),
+    allow_retry = TRUE
+  )
+)
+```
+
+#### Exercices
+Ecrivez un test permettant de vérifier que le 29 février 2020 se situe bien entre le 1er février 2020 et le 1er mars 2020.
+```{r interval-exo1, exercise=TRUE, exercise.lines = 3}
+intervalle <- interval(ymd("2020-02-01"),ymd("2020-03-01"))
+test <- # ICI code pour tester l'inclusion
+test
+```
+```{r interval-exo1-solution}
+intervalle <- interval(ymd("2020-02-01"),ymd("2020-03-01"))
+test <- ymd("2020-02-29") %within% intervalle
+test
+```
+
+Décalez l'intervalle ci-dessous avec la fonction dédiée afin de le faire débuter au 1er juillet 2021.
+```{r interval-exo2, exercise=TRUE, exercise.lines = 3}
+intervalle <- interval(ymd("2020-10-01"),ymd("2020-12-30"))
+intervalle_decale <- # ICI code pour décaler l'intervalle
+intervalle_decale
+```
+```{r interval-exo2-solution}
+intervalle <- interval(ymd("2020-10-01"),ymd("2020-12-30"))
+intervalle_decale <- int_shift(intervalle,months(-3))
+intervalle_decale
+```
+
 ## Horodatage (Maxence)
