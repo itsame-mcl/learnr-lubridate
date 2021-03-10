@@ -339,6 +339,26 @@ Exemples de manipulations de dates
 `today() - (months(2) + days(3))`
 
 
-### Calculs avec des dates (Maxence)
+## Durées et intervalles
+
+Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des **périodes**, c'est à dire des variations temporelles au sens du temps *légal*. Cependant, le package **lubridate** permet également de réaliser des calculs sur des *durées* et des *intervalles*.
+
+Une **durée** représente une quantité exacte de secondes. Elle ne dépend pas passage à l'heure d'été ou d'hiver, ni des secondes intercalaires qui sont parfois ajoutées pour prendre en compte la durée réelle de la rotation de la terre ou des années bisextiles.
+
+Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par rapport aux fonctions permettant d'accéder aux éléments d'une date, on ajoute également un **s** en suffixe, comme pour les périodes. Par exemple :
+
+```{r examples-durations, echo=TRUE, comment=''}
+# heures
+dd1 <- dhours(4)
+dd1
+# semaines
+dd2 <- dweeks(2)
+dd2
+# millisecondes
+dd3 <- dmilliseconds(2850)
+dd3
+```
+
+
 
 ## Horodatage (Maxence)
