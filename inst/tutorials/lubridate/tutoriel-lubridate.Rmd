@@ -339,12 +339,8 @@ Exemples de manipulations de dates
 
 `today() - (months(2) + days(3))`
 
-
-## Durées et intervalles
-
-Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des **périodes**, c'est à dire des variations temporelles au sens du temps *légal*. Cependant, le package **lubridate** permet également de réaliser des calculs sur des *durées* et des *intervalles*.
-
-### Durées
+## Durées
+Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des **périodes**, c'est à dire des variations temporelles au sens du temps *légal*. Cependant, le package **lubridate** permet également de réaliser des calculs sur des **durées**.
 
 Une **durée** représente une quantité exacte de secondes. Elle ne dépend pas passage à l'heure d'été ou d'hiver, ni des secondes intercalaires qui sont parfois ajoutées pour prendre en compte la durée réelle de la rotation de la terre ou des années bisextiles.
 
@@ -413,6 +409,89 @@ date_arrivee
 date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
 date_arrivee <- date_depart + ddays(6) + dhours(5) + dminutes(30)
 date_arrivee
+```
+
+## Intervalles
+
+Un **intervalle** représente une durée physique entre deux dates. Il peut être déclaré à l'aide de la fonction **interval** ou de la syntaxe **%--%** :
+```{r examples-intervals, echo=TRUE, comment=''}
+# 1ère syntaxe
+i1 <- interval(ymd("2020-09-01"),ymd("2021-05-31"))
+i1
+# 2ème syntaxe, pour le même intervalle
+i2 <- ymd("2020-09-01") %--% ymd("2021-05-31")
+i2
+```
+
+Il est ensuite possible de déterminer si une date appartient ou non à un intervalle à l'aide de l'opérateur **%within%** :
+```{r examples-within, echo=TRUE, comment=''}
+# 1er test : le 1er janvier 2021 est inclus dans l'intervalle
+test1 <- ymd("2021-01-01") %within% i1
+test1
+# 2ème test : le 15 juillet 2020 n'est pas inclus dans l'intervalle
+test2 <- ymd("2020-07-15") %within% i2
+test2
+```
+
+D'autres fonctions permettent de comparer des intervalles : **int_aligns** vérifie si deux intervalles partagent une borne (de début ou de fin) tandis que **int_overlaps** détermine si deux intervalles ont au moins une seconde en commun.
+```{r examples-align-overlap, echo=TRUE, comment=''}
+# Définition de 3 intervalles
+i3 <- interval(ymd("2021-01-01"),ymd("2021-02-01"))
+i4 <- interval(ymd("2021-01-01"),ymd("2021-03-01"))
+i5 <- interval(ymd("2021-01-15"),ymd("2021-02-15"))
+# i3 et i4 ont la borne de début du 1er janvier 2021 en commun
+test3 <- int_aligns(i3,i4)
+test3
+# i3 et i5 ont des secondes en commun
+test4 <- int_overlaps(i3,i5)
+test4
+```
+
+Citons encore **int_length** qui permet d'obtenir la longueur (en secondes) d'un intervalle et **int_shift** qui décale un intervalle en fonction d'une période donnée :
+```{r examples-length-shift, echo=TRUE, comment=''}
+# Quelle est la longueur de i3 ?
+int_length(i3)
+# Décalage de i4 d'une période de 15 jours
+i6 <- int_shift(i4,days(15))
+i6
+```
+
+```{r quiz-intervals}
+quiz(
+  question("Lesquelles de ces instructions créent un intervalle du 1er au 8 janvier 2021 ?",
+    answer("ymd(2021-01-01)--ymd(2021-01-08)"),
+    answer("ymd(2021-01-01)%--%ymd(2021-01-08)", correct = TRUE),
+    answer("interval(ymd(2021-01-01),ymd(2021-01-08))", correct = TRUE),
+    answer("ymd(2021-01-01)%within%ymd(2021-01-08)"),
+    answer("ymd(2021-01-01)%--%ymd(2021-08-01)"),
+    allow_retry = TRUE
+  )
+)
+```
+
+#### Exercices
+Ecrivez un test permettant de vérifier que le 29 février 2020 se situe bien entre le 1er février 2020 et le 1er mars 2020.
+```{r interval-exo1, exercise=TRUE, exercise.lines = 3}
+intervalle <- interval(ymd("2020-02-01"),ymd("2020-03-01"))
+test <- # ICI code pour tester l'inclusion
+test
+```
+```{r interval-exo1-solution}
+intervalle <- interval(ymd("2020-02-01"),ymd("2020-03-01"))
+test <- ymd("2020-02-29") %within% intervalle
+test
+```
+
+Décalez l'intervalle ci-dessous avec la fonction dédiée afin de le faire débuter au 1er juillet 2021.
+```{r interval-exo2, exercise=TRUE, exercise.lines = 3}
+intervalle <- interval(ymd("2020-10-01"),ymd("2020-12-30"))
+intervalle_decale <- # ICI code pour décaler l'intervalle
+intervalle_decale
+```
+```{r interval-exo2-solution}
+intervalle <- interval(ymd("2020-10-01"),ymd("2020-12-30"))
+intervalle_decale <- int_shift(intervalle,months(-3))
+intervalle_decale
 ```
 
 ## Horodatage (Maxence)
