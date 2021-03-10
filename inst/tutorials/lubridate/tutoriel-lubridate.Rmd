@@ -381,4 +381,24 @@ cd4 <- ymd_hm("2021-03-28 01:30") + dhours(2)
 cd4 # Ici, l'heure affichée est 03h30, car le temps UTC ne varie pas
 ```
 
+```{r quiz-compenents-durations}
+quiz(
+  question("Lesquelles de ces instructions correspondent à une durée de 10800 secondes ?",
+    answer("dhours(3)", correct = TRUE),
+    answer("minutes(180)"),
+    answer("second(10800)"),
+    answer("ddays(1/8)", correct = TRUE),
+    answer("dhours(4) - dminutes(60)", correct = TRUE),
+    allow_retry = TRUE
+  ),
+  question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + ddays(2) ?",
+    answer("2019-04-01 CEST"),
+    answer("2019-04-01 01:00:00 CEST", correct = TRUE),
+    answer("2019-04-01 01:00:00 UTC"),
+    answer("2019-04-01 00:00:00 CEST"),
+    allow_retry = TRUE
+  )
+)
+```
+
 ## Horodatage (Maxence)
