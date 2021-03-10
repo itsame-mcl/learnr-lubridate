@@ -160,8 +160,6 @@ date_convertie_2
 
 ## Manipulation des dates 
 
-[Comment ajouter un fichier CSS !? ](https://education.rstudio.com/blog/2020/05/learnr-for-remote/#2-customized-hints-and-solutions)
-
 Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs.
 
 ### Accès aux éléments d'une date
@@ -211,29 +209,29 @@ Prenons un exemple que nous garderons dans toute la suite de cette section comme
 
 
 ```{r exemple-1999-09_01, include=FALSE}
-date <- dmy_hms("01-09-1999 11:59:59")
+exemple_date <- dmy_hms("01-09-1999 11:59:59")
 ```
 
 ```{r examples-data-management, echo=TRUE, include=TRUE, comment=''}
 # l'heure
-hour(date)
+hour(exemple_date)
 # le jour
-day(date) 
+day(exemple_date) 
 # le numéro de la semaine
-week(date) 
+week(exemple_date) 
 # l'année
-year(date) 
+year(exemple_date) 
 ```
 
 Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
 ```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
-month(date) 
+month(exemple_date) 
 # label abrévié
-month(date, label = T)
+month(exemple_date, label = T)
 # label non abrévié
-month(date, label = T, abbr = F) 
+month(exemple_date, label = T, abbr = F) 
 ```
 
 Cela affiche également les autres mois et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
@@ -246,13 +244,13 @@ Voici quelques exemples avec notre date du 01/09/1999.
 
 ```{r examples-quarter-semester, echo=TRUE, include=TRUE, comment=''}
 # trimestre sans année
-quarter(date, with_year = F) 
+quarter(exemple_date, with_year = F) 
 # trimestre avec année
-quarter(date, with_year = T) 
+quarter(exemple_date, with_year = T) 
 # semestre sans année
-semester(date, with_year = F) 
+semester(exemple_date, with_year = F) 
 # semestre avec année
-semester(date, with_year = T) 
+semester(exemple_date, with_year = T) 
 ```
 
 
@@ -260,13 +258,13 @@ On remarque que toutes les fonctions retournent un nombre qui correspond soit à
 
 ```{r exemples-data-management-bool, echo=TRUE, include=TRUE, comment=''}
 # année bisextile ?
-leap_year(date) 
+leap_year(exemple_date) 
 # matin ?
-am(date) 
+am(exemple_date) 
 # après-midi ?
-pm(date) 
+pm(exemple_date) 
 # heure d'été ?
-dst(date) 
+dst(exemple_date) 
 ```
 
 
@@ -280,16 +278,17 @@ quiz(
     answer("week_start"),
     answer("label"),
     answer("une date", correct = TRUE),
-    answer("locaale"),
+    answer("locale"),
     answer("abbr"),
-    allow_retry = TRUE
+    allow_retry = FALSE
   ),
-  question("Parmi ces commandes, lequelles sont vraies?",
-    answer("1", correct = TRUE),
-    answer("2"),
-    answer("3"),
-    answer("4", correct = TRUE),
-    allow_retry = TRUE
+  question("Quel(s) paramètre(s) prend la fonction `wday`?",
+    answer("week_start", correct = TRUE),
+    answer("label", correct = TRUE),
+    answer("une date", correct = TRUE),
+    answer("locale", correct = TRUE),
+    answer("abbr", correct = TRUE),
+    allow_retry = FALSE
   )
 )
 ```
@@ -297,46 +296,179 @@ quiz(
 
 #### Exercices
 
-Ecrire la date du 15 février 1970 puis à l'aide d'une fonction extraire le mois (numéro et nom).
-```{r 15-02-1970-month, exercise=TRUE, exercise.lines = 5}
+Ecrire la date du 15 février 1970 puis à l'aide d'une fonction extraire le mois (numéro, nom abbrévié et non abbrévié).
+```{r datecomponents-ex1, exercise=TRUE, exercise.lines = 3}
 
 ```
 
-```{r 15-02-1970-month-solution}
-date <- dmy("15-02-1970")
-month(date, label = T)
-month(date, label = T, abbr = F)
+```{r datecomponents-ex1-solution}
+date_15fev1970 <- dmy("15-02-1970")
+month(date_15fev1970)
+month(date_15fev1970, label = T)
+month(date_15fev1970, label = T, abbr = F)
 ```
 
 Afficher tous les jours de la semaine à l'aide d'une commande en commençant par lundi. (*Remarque* Le 1er février 2021 est un lundi.)
-```{r days, exercise=TRUE, exercise.lines = 3}
+```{r datecomponents-ex2, exercise=TRUE, exercise.lines = 3}
 
 ```
 
-```{r days-solution}
+```{r datecomponents-ex2-solution}
 wday(dmy("01-02-2021") + wday(0:6), label = T, abbr = F)
 ```
 
-Ennoncé
-```{r day, exercise=TRUE, exercise.lines = 5}
-date <- dmy("10-12-1990")
+Extraire tous les éléments de la date du 10 décembre 1990.
+```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 5}
+date_ex <- dmy("10-12-1990")
 ```
 
-```{r day-solution}
-day(date)
+```{r datecomponents-ex3-solution}
+date_ex <- dmy("10-12-1990")
+day(date_ex)
+month(date_ex)
+year(date_ex)
 ```
 
 
 
-### Modification d'une date (Alanna)
+### Modification d'une date
 
-**Parler de la fonction UPDATE ! **
+Tout comme on peut accéder aux éléments d'une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion était prévue le lendemain à 14 heures. Pour cela on changera les attributs `day, hour, minute` et `second`
+
+```{r, echo=TRUE, include=TRUE, comment=''}
+day(exemple_date) <- 2
+hour(exemple_date) <- 14
+minute(exemple_date) <- 0
+second(exemple_date) <- 0
+exemple_date
+```
+
+Mais on peut également utliser la fonction `update` pour affecter toutes ces modifications simultanément comme on peut le voir dans l'exemple ci-dessous.
+
+```{r, echo=TRUE, include=TRUE, comment=''}
+exemple_date <- update(exemple_date, day=2, hour=14, minute=0, second=0)
+exemple_date
+```
+
+Une autre façon de modifier une date consiste à l'arrondir. Pour cela nous disposons de trois fonctions qui sont les suivantes : 
+
+* `floor_date` qui arrondit à l'unité la plus proche par valeurs inférieures
+* `round_date` qui arrondit à l'unité la plus proche 
+* `ceiling_date` qui arrondit à l'unité la plus proche par valeurs supérieures
+
+Ces trois fonctions prennent deux paramètres : une date et l'unité de l'arrondi `unit`. L'unité peut prendre plusieurs niveaux de précision : miliseconde, seconde, minute, heure, jour, semaine, mois, etc. 
+
+```{r, echo=FALSE, include=TRUE, comment=''}
+exemple_date <- dmy_hms("01-09-1999 11:59:59")
+```
+
+
+```{r, echo=TRUE, include=TRUE, comment=''}
+# par défaut
+round_date(exemple_date)
+
+# arrondi de l'heure par valeurs inférieures
+floor_date(exemple_date, unit = "hour")
+
+# arrondi de l'heure à la valeur la plus proche
+round_date(exemple_date, unit = "hour")
+
+# arrondi de l'heure par valeurs supérieures
+ceiling_date(exemple_date, unit = "hour")
+```
+
+On peut même aller plus loin dans la précision en spécifiant le nombre de l'unité : 10 secondes, 5 minutes, 2 heures, 3 mois et ainsi de suite comme illustré dans les exemples ci-dessous. Pour arrondir aux millisecondes près on ajoute 32 secondes à notre date.
+
+```{r, echo=TRUE, include=TRUE, comment=''}
+x <- ymd_hms("1999-09-01 11:59:59.32")
+
+# arrondi aux 5 millièmes de secondes
+round_date(x, ".5s")
+
+# arrondi aux 5 minutes près 
+round_date(x, "5 mins")
+
+# arrondi à 5 heures près par valeurs supérieures
+ceiling_date(x, "5 hours")
+```
+
+Cette fonction permet une granularité encore plus fine notamment via des arrondis bimensuels, semestriels, trimestriels, biannuels et annuels comme dans les exemples ci-dessous. On peut même vérifier qu'un arrondi par trimestre correspond à un arrondi tous les 3 mois.
+
+```{r, echo=TRUE, include=TRUE, comment=''}
+# arrondi bimensuel
+round_date(x, "bimonth")
+
+# vérification que : arrondi trimestrielle = arrondi tous les trois mois
+round_date(x, "quarter") == round_date(x, "3 months")
+
+# arrondi biannuel
+round_date(x, "halfyear")
+```
+
+```{r quiz-round-date}
+quiz(
+  question("Nous avons décidé d'arrondir la date `1999-09-01 11:59:50 UTC` et nous obtenons `2000-01-01 UTC`. Quelle(s) commande(s) permettent ce résultat ?",
+    answer('floor_date(exemple_date, unit = "year")'),
+    answer('round_date(exemple_date, unit = "year")', correct = TRUE),
+    answer('ceiling_date(exemple_date, unit = "year")', correct = TRUE),
+    answer('round_date(exemple_date, unit = "month")'),
+    answer('round_date(exemple_date, unit = "quarter")'),
+    answer('round_date(exemple_date, unit = "halfyear")'),
+    allow_retry = FALSE
+  ),
+  question('Avec la même date nous arrondissons via la commande `round_date(exemple_date, unit = "halfyear")`. Quel est le résultat obtenu ?',
+    answer('1999-06-01 UTC'),
+    answer('1999-07-01 UTC', correct = TRUE),
+    answer('1999-09-01 UTC'),
+    answer('1999-12-01 UTC'),
+    answer('2000-01-01 UTC'),
+    allow_retry = FALSE
+  )
+)
+```
+
+#### Exercices
+
+Une personne a mis la date du 29 février 2000 alors qu'il s'agissait du 1er mars. Modifier la date en conséquence sans utiliser la fonction `update`.
+```{r datemodif-ex1, exercise=TRUE, exercise.lines = 5}
+date_ex1 <- dmy("29-02-2000")
+```
+
+```{r datemodif-ex1-solution}
+date_ex1 <- dmy("29-02-2000")
+day(date_ex1) <- 1
+month(date_ex1) <- 3
+date_ex1
+```
+
+Effectuer les mêmes modifications qu'à la question précédente mais via la fonction `update`.
+```{r datemodif-ex2, exercise=TRUE, exercise.lines = 3}
+date_ex2 <- dmy("29-02-2000")
+
+```
+
+```{r datemodif-ex2-solution}
+date_ex2 <- dmy("29-02-2000")
+date_ex2 <- update(date_ex1, day = 1, month = 3)
+date_ex2
+```
+
+Ecrire la date suivante : `3 février 2017 à 16h 15m 32s` puis trouver comment l'arrondir de telle sorte qu'on obtienne `2017-02-03 18:00:00 UTC`. 
+
+```{r datemodif-ex3, exercise=TRUE, exercise.lines = 3}
+date_ex3 <- dmy("")
+
+```
+
+```{r datemodif-ex3-solution}
+date_ex3 <- dmy_hms("03-02-2017 16:15:32")
+ceiling_date(date_ex3, unit = "2 hours")
+
+```
 
 Exemples de manipulations de dates
 
-`years(2017) + months(2) + days(3)`
-
-`today() - (months(2) + days(3))`
+`today()`
 
 
 ### Calculs avec des dates (Maxence)
