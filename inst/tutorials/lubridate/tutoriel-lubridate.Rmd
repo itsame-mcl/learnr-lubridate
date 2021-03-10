@@ -7,6 +7,7 @@ description: "Tutoriel dédié à l'apprentissage des bases du package de gestio
 
 ```{r setup, include=FALSE}
 library(learnr)
+library(lubridate)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -348,7 +349,6 @@ Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des 
 Une **durée** représente une quantité exacte de secondes. Elle ne dépend pas passage à l'heure d'été ou d'hiver, ni des secondes intercalaires qui sont parfois ajoutées pour prendre en compte la durée réelle de la rotation de la terre ou des années bisextiles.
 
 Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par rapport aux fonctions permettant d'accéder aux éléments d'une date, on ajoute également un **s** en suffixe, comme pour les périodes. Par exemple :
-
 ```{r examples-durations, echo=TRUE, comment=''}
 # heures
 dd1 <- dhours(4)
@@ -399,6 +399,20 @@ quiz(
     allow_retry = TRUE
   )
 )
+```
+
+#### Exercice
+
+A partir du 25 mars 2021, 12h00 (heure de Paris), ajoutez la durée permettant d'arriver au 1er avril 2021, 18h30 (heure de Paris)
+```{r durationexo, exercise=TRUE, exercise.lines = 3}
+date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
+date_arrivee <- # ICI code pour ajouter la durée
+date_arrivee
+```
+```{r durationexo-solution}
+date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
+date_arrivee <- date_depart + ddays(6) + dhours(5) + dminutes(30)
+date_arrivee
 ```
 
 ## Horodatage (Maxence)
