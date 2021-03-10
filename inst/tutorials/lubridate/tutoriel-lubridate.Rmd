@@ -494,4 +494,39 @@ intervalle_decale <- int_shift(intervalle,months(-3))
 intervalle_decale
 ```
 
-## Horodatage (Maxence)
+## Horodatage
+
+Le package **lubridate** permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de "timbres", grâce à la fonction **stamp** :
+```{r examples-stamps, echo=TRUE, comment=''}
+# 1ère étape : Définition du timbre à partir d'une phrase modèle passée en paramètre
+# La détection automatique est plus efficace en utilisant un jour supérieur au 12 et une année se terminant par un nombre supérieur à 31 dans le modèle
+# Pour distinguer les minutes ou les secondes des heures, il est recommandé d'utiliser des nombres supérieurs à 24
+timbre <- stamp("Lu et approuvé le 23 janvier 2085 à 17h30")
+# 2ème étape : Application du timbre à une date passée en paramètre
+# La fonction à appeler correspond au nom du timbre déterminé dans la 1ère étape
+horodatage <- timbre(ymd_hm("2021-03-15 08h45"))
+horodatage
+```
+
+Si le timbre d'horodatage ne contient qu'une date ou qu'une heure, l'usage des fonctions spécialisées **stamp_date** et **stamp_time** améliore encore l'efficacité de la détection automatique. En cas d'échec, il est toujours possible de préciser explicitement l'ordre attendu en paramètre supplémentaire, avec la syntaxe habituelle de description des dates :
+```{r examples-stamps-ambiguous, echo=TRUE, comment=''}
+# On précise explicitement l'ordre des paramètres pour éviter toute erreur
+timbre2 <- stamp("Reçu à 08h30 le 03/02/20","HM dmy")
+timbre2(ymd_hm("2021-04-29 22h48"))
+```
+
+#### Exercice
+
+Définissez puis utilisez un tampon d'horodatage permattent d'écrire automatiquement la phrase "Exportation terminée le 03/06/2019 à 14:26:53"
+```{r horodatage-exo, exercise=TRUE, exercise.lines = 4}
+date <- ymd_hms("2019-06-03 14:26:53")
+tampon <- # ICI code pour définir le tampon
+horodatage <- # ICI code pour utiliser le tampon
+horodatage
+```
+```{r horodatage-exo-solution}
+date <- ymd_hms("2019-06-03 14:26:53")
+tampon <- stamp("Exportation terminée le 25/02/2096 à 15:35:45")
+horodatage <- tampon(date)
+horodatage
+```
