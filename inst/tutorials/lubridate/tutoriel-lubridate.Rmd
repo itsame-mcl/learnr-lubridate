@@ -471,30 +471,40 @@ Exemples de manipulations de dates
 
 `today()`
 
-## Durées
-Jusqu'à présent, l'ensemble des opérations présentées s'effectuent sur des **périodes**, c'est à dire des variations temporelles au sens du temps *légal*. Cependant, le package **lubridate** permet également de réaliser des calculs sur des **durées**.
+## Périodes et Durées
+Le package **lubridate** permet également de réaliser des calculs sur des **périodes** ou des **durées**.
 
-Une **durée** représente une quantité exacte de secondes. Elle ne dépend pas passage à l'heure d'été ou d'hiver, ni des secondes intercalaires qui sont parfois ajoutées pour prendre en compte la durée réelle de la rotation de la terre ou des années bisextiles.
+Une **période** représente l'écoulement d'une quantité d'unités de temps *légal*. Elle est insensible aux années bisextiles, aux secondes intercalaires ou encore au passage à l'heure d'été ou d'hiver. Ainsi, ajouter une période d'un an à partir du 1er janvier 2020 aboutit au 1er janvier 2021, même si l'année 2020 se composait de 366 jours au lieu de 365.
 
-Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par rapport aux fonctions permettant d'accéder aux éléments d'une date, on ajoute également un **s** en suffixe, comme pour les périodes. Par exemple :
+Les fonctions permettant de manipuler les périodes portent un nom similaire à celles permettant d'accéder aux éléments d'une date, avec un **s** en suffixe.
+
+Une **durée** représente une quantité exacte de secondes. Le résultat en temps légal des opérations avec des durées dépend donc passage à l'heure d'été ou d'hiver, des secondes intercalaires et des années bisextiles.
+
+Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par exemple :
 ```{r examples-durations, echo=TRUE, comment=''}
-# heures
+# durée de 4 heures
 dd1 <- dhours(4)
 dd1
-# semaines
-dd2 <- dweeks(2)
+# période de 2 semaines
+dd2 <- weeks(2)
 dd2
 # millisecondes
 dd3 <- dmilliseconds(2850)
 dd3
 ```
 
-Comme une période, une durée peut être ajoutée ou retranchée à une date, le résultat est alors reconverti en temps légal :
+Une période ou une durée peuvent être ajoutées ou retranchées à une date, le résultat est alors reconverti en temps légal :
 ```{r examples-calc-durations, echo=TRUE, comment=''}
-# Ajout d'une durée de 2 heures, le 28 mars 2021 02h00 étant le début de l'heure d'été
+# Ajout d'une période de 2 heures, le 28 mars 2021 02h00 étant le début de l'heure d'été
+cp1 <- ymd_hm("2021-03-28 01:30",tz="Europe/Paris") + hours(2)
+cp1
+# Ajout d'une durée de 2 heures au lieu d'une période
 cd1 <- ymd_hm("2021-03-28 01:30",tz="Europe/Paris") + dhours(2)
-cd1 # On remarque que l'heure affichée est 04h30 et non 03h30
-# Retrait d'une durée d'un an, l'année 2020 étant bisextile
+cd1 # On remarque que l'heure affichée est 04h30 et non 03h30, soit le résultat du strict écoulement de 7200 secondes compte tenu du changement d'heure
+# Retrait d'une période d'un an, l'année 2020 étant bisextile
+cp2 <- ymd_hm("2020-07-01 00:00") - years(1)
+cp2
+# Retrait d'une durée d'un an
 cd2 <- ymd_hm("2020-07-01 00:00") - dyears(1)
 cd2 # la durée physique d'une année est de 365 jours et 6 heures, d'où l'heure affichée de 18h00
 # Ajout d'une durée de 120 minutes, le 31 octobre 2021 03h00 étant le début de l'heure d'hiver 
@@ -502,7 +512,7 @@ cd3 <- ymd_hm("2021-10-31 01:30",tz="Europe/Paris") + dminutes(120)
 cd3 # On remarque que l'heure affichée est 02h30 et non 03h30
 ```
 
-A noter qu'en l'absence de précision d'un fuseau horaire, le temps UTC s'applique. Or, ce dernier est insensible au passage à l'heure d'été ou d'hiver.
+A noter qu'en l'absence de précision d'un fuseau horaire, le temps UTC s'applique. Or, ce dernier est insensible au passage à l'heure d'été ou d'hiver, même avec des durées.
 ```{r examples-calc-durations-utc, echo=TRUE, comment=''}
 # Ajout d'une durée de 2 heures, le 28 mars 2021 02h00 étant le début de l'heure d'été
 cd4 <- ymd_hm("2021-03-28 01:30") + dhours(2)
@@ -519,10 +529,10 @@ quiz(
     answer("dhours(4) - dminutes(60)", correct = TRUE),
     allow_retry = TRUE
   ),
-  question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + ddays(2) ?",
-    answer("2019-04-01 CEST"),
-    answer("2019-04-01 01:00:00 CEST", correct = TRUE),
-    answer("2019-04-01 01:00:00 UTC"),
+  question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + days(2) + hours(6) ?",
+    answer("2019-04-01 06:00:00 CEST", correct = TRUE),
+    answer("2019-04-01 07:00:00 CEST"),
+    answer("2019-04-01 06:00:00 UTC"),
     answer("2019-04-01 00:00:00 CEST"),
     allow_retry = TRUE
   )
