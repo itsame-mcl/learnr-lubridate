@@ -48,20 +48,25 @@ Les dates retournées par toutes les fonctions de **lubridate** sont au format "
 ### Exemples
 
 ```{r, echo=TRUE, comment=''}
-date_1 <- ("25/12/2015") # Jour/Mois/Année
+# Jour/Mois/Année
+date_1 <- ("25/12/2015") 
 lubridate1 <- dmy(date_1)
 lubridate1 # Notre date est bien importée au format yyyy-mm-dd
 
-date_2 <- ("2020-24-12") # Année/Jour/Mois
+# Année/Jour/Mois
+date_2 <- ("2020-24-12") 
 lubridate2 <- ydm(date_2)
 lubridate2
 
-date_3 <- ("12 Janvier 2021 à 15:30:05") # Jour/Mois/Année/Heure/Minute/Seconde
+# Jour/Mois/Année/Heure/Minute/Seconde
+date_3 <- ("12 Janvier 2021 à 15:30:05") 
 lubridate3 <- dmy_hms(date_3)
 lubridate3
 
-now() # Date et heure actuelle
-today() # Date actuelle seulement
+# Date et heure actuelle
+now() 
+# Date actuelle seulement
+today() 
 ```
 
 ### Exercices 
@@ -159,11 +164,9 @@ date_convertie_2 <- with_tz(date_2, "America/Los_Angeles")
 date_convertie_2
 ```
 
-## Manipulation des dates 
+## Manipulation des dates
 
-Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs.
-
-### Accès aux éléments d'une date
+Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
 
 Dans le package `lubridate` il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
@@ -281,7 +284,8 @@ quiz(
     answer("une date", correct = TRUE),
     answer("locale"),
     answer("abbr"),
-    allow_retry = FALSE
+    allow_retry = FALSE,
+    random_answer_order = TRUE
   ),
   question("Quel(s) paramètre(s) prend la fonction `wday`?",
     answer("week_start", correct = TRUE),
@@ -289,13 +293,14 @@ quiz(
     answer("une date", correct = TRUE),
     answer("locale", correct = TRUE),
     answer("abbr", correct = TRUE),
-    allow_retry = FALSE
+    allow_retry = FALSE,
+    random_answer_order = TRUE
   )
 )
 ```
 
 
-#### Exercices
+### Exercices
 
 Ecrire la date du 15 février 1970 puis à l'aide d'une fonction extraire le mois (numéro, nom abbrévié et non abbrévié).
 ```{r datecomponents-ex1, exercise=TRUE, exercise.lines = 3}
@@ -318,9 +323,9 @@ Afficher tous les jours de la semaine à l'aide d'une commande en commençant pa
 wday(dmy("01-02-2021") + wday(0:6), label = T, abbr = F)
 ```
 
-Extraire tous les éléments de la date du 10 décembre 1990.
-```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 5}
-date_ex <- dmy("10-12-1990")
+Ecrire et extraire tous les éléments de la date du 10 décembre 1990.
+```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 4}
+
 ```
 
 ```{r datecomponents-ex3-solution}
@@ -331,12 +336,11 @@ year(date_ex)
 ```
 
 
-
-### Modification d'une date
+## Modification des dates
 
 Tout comme on peut accéder aux éléments d'une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion était prévue le lendemain à 14 heures. Pour cela on changera les attributs `day, hour, minute` et `second`
 
-```{r, echo=TRUE, include=TRUE, comment=''}
+```{r modif-date, echo=TRUE, include=TRUE, comment=''}
 day(exemple_date) <- 2
 hour(exemple_date) <- 14
 minute(exemple_date) <- 0
@@ -346,7 +350,7 @@ exemple_date
 
 Mais on peut également utliser la fonction `update` pour affecter toutes ces modifications simultanément comme on peut le voir dans l'exemple ci-dessous.
 
-```{r, echo=TRUE, include=TRUE, comment=''}
+```{r modif-date-update, echo=TRUE, include=TRUE, comment=''}
 exemple_date <- update(exemple_date, day=2, hour=14, minute=0, second=0)
 exemple_date
 ```
@@ -359,12 +363,12 @@ Une autre façon de modifier une date consiste à l'arrondir. Pour cela nous dis
 
 Ces trois fonctions prennent deux paramètres : une date et l'unité de l'arrondi `unit`. L'unité peut prendre plusieurs niveaux de précision : miliseconde, seconde, minute, heure, jour, semaine, mois, etc. 
 
-```{r, echo=FALSE, include=TRUE, comment=''}
+```{r reload-example-date, echo=FALSE, include=TRUE, comment=''}
 exemple_date <- dmy_hms("01-09-1999 11:59:59")
 ```
 
 
-```{r, echo=TRUE, include=TRUE, comment=''}
+```{r round-hour, echo=TRUE, include=TRUE, comment=''}
 # par défaut
 round_date(exemple_date)
 
@@ -380,30 +384,30 @@ ceiling_date(exemple_date, unit = "hour")
 
 On peut même aller plus loin dans la précision en spécifiant le nombre de l'unité : 10 secondes, 5 minutes, 2 heures, 3 mois et ainsi de suite comme illustré dans les exemples ci-dessous. Pour arrondir aux millisecondes près on ajoute 32 secondes à notre date.
 
-```{r, echo=TRUE, include=TRUE, comment=''}
-x <- ymd_hms("1999-09-01 11:59:59.32")
+```{r round-with-precision, echo=TRUE, include=TRUE, comment=''}
+exemple_date <- ymd_hms("1999-09-01 11:59:59.32")
 
 # arrondi aux 5 millièmes de secondes
-round_date(x, ".5s")
+round_date(exemple_date, ".5s")
 
 # arrondi aux 5 minutes près 
-round_date(x, "5 mins")
+round_date(exemple_date, "5 mins")
 
 # arrondi à 5 heures près par valeurs supérieures
-ceiling_date(x, "5 hours")
+ceiling_date(exemple_date, "5 hours")
 ```
 
 Cette fonction permet une granularité encore plus fine notamment via des arrondis bimensuels, semestriels, trimestriels, biannuels et annuels comme dans les exemples ci-dessous. On peut même vérifier qu'un arrondi par trimestre correspond à un arrondi tous les 3 mois.
 
-```{r, echo=TRUE, include=TRUE, comment=''}
+```{r round-bimonth-quarter-halfyear, echo=TRUE, include=TRUE, comment=''}
 # arrondi bimensuel
-round_date(x, "bimonth")
+round_date(exemple_date, "bimonth")
 
 # vérification que : arrondi trimestrielle = arrondi tous les trois mois
-round_date(x, "quarter") == round_date(x, "3 months")
+round_date(exemple_date, "quarter") == round_date(exemple_date, "3 months")
 
 # arrondi biannuel
-round_date(x, "halfyear")
+round_date(exemple_date, "halfyear")
 ```
 
 ```{r quiz-round-date}
@@ -415,7 +419,8 @@ quiz(
     answer('round_date(exemple_date, unit = "month")'),
     answer('round_date(exemple_date, unit = "quarter")'),
     answer('round_date(exemple_date, unit = "halfyear")'),
-    allow_retry = FALSE
+    allow_retry = FALSE,
+    random_answer_order = TRUE
   ),
   question('Avec la même date nous arrondissons via la commande `round_date(exemple_date, unit = "halfyear")`. Quel est le résultat obtenu ?',
     answer('1999-06-01 UTC'),
@@ -423,12 +428,13 @@ quiz(
     answer('1999-09-01 UTC'),
     answer('1999-12-01 UTC'),
     answer('2000-01-01 UTC'),
-    allow_retry = FALSE
+    allow_retry = FALSE,
+    random_answer_order = TRUE
   )
 )
 ```
 
-#### Exercices
+### Exercices
 
 Une personne a mis la date du 29 février 2000 alors qu'il s'agissait du 1er mars. Modifier la date en conséquence sans utiliser la fonction `update`.
 ```{r datemodif-ex1, exercise=TRUE, exercise.lines = 5}
@@ -457,14 +463,13 @@ date_ex2
 Ecrire la date suivante : `3 février 2017 à 16h 15m 32s` puis trouver comment l'arrondir de telle sorte qu'on obtienne `2017-02-03 18:00:00 UTC`. 
 
 ```{r datemodif-ex3, exercise=TRUE, exercise.lines = 3}
-date_ex3 <- dmy("")
+date_ex3 <- # votre code
 
 ```
 
 ```{r datemodif-ex3-solution}
 date_ex3 <- dmy_hms("03-02-2017 16:15:32")
 ceiling_date(date_ex3, unit = "2 hours")
-
 ```
 
 Exemples de manipulations de dates
