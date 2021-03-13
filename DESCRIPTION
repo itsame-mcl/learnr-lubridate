@@ -3,7 +3,9 @@ Type: Package
 Title: Tutoriel libridate
 Version: 0.1.0
 Author: Alanna GENIN, Maxence LAGALLE, Kévin LEROY
+Maintener: Alanna GENIN, Maxence LAGALLE, Kévin LEROY
+Licence: Creative Commons Attribution-ShareAlike International License version 4.0
 Description: Permet d'apprendre la gestion des dates grâce au package lubridate
 Encoding: UTF-8
 LazyData: true
-Imports: learnr
+Imports: learnr, lubridate
