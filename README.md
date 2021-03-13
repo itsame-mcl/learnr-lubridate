@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 Ce package a pour but l’apprentissage des fonctions de base du package
-de geste des dates “lubridate”.
+de gestion des dates “lubridate”.
 
 ## Installation
 
@@ -20,5 +20,13 @@ devtools::install_github("maxence-lagalle/learnr-lubridate")
 
 ## Utilisation
 
-Une fois installé, vous pouvez accéder au tutoriel depuis la fenêtre
-“Tutorial” de RStudio.
+Une fois installé, vous pouvez accéder au tutoriel avec les commandes
+suivantes :
+
+``` r
+# install.packages("learnr")
+learnr::run_tutorial("lubridate", package = "learnr.lubridate")
+```
+
+Sous RStudio, le tutoriel est également accessible depuis la fenêtre
+“Tutorial”.
