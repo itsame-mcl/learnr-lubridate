@@ -21,7 +21,7 @@ Pour contourner ce problème, les indications temporelles sont souvent stockées
 
 Les fonctionnalités de base de R permettent en partie de traiter ces questions, mais au prix de contraintes de syntaxe et d'un manque de souplesse.
 
-Le package **lubridate** permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
+Le package `lubridate` permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
 
 L'installation et le chargement s'effectuent à l'aide la commande suivante :
 
@@ -36,14 +36,14 @@ L'importation de données temporelles avec **lubridate** s'effectue en deux temp
 
 * Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heure (**h**), minute (**m**), seconde (**s**).
 * Appel de la fonction de **lubridate** reprenant l'ordre de ces éléments : 
-  + **ymd_hms**() - Année Mois Jour Heure Minute Seconde -
-  + **dmy**() - Jour Mois Année -
-  + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
-  + Toute autre combinaison avec **y**, **m**, **d**, **h**, **m** et **s**.
+  + `ymd_hms`() - Année Mois Jour Heure Minute Seconde -
+  + `dmy`() - Jour Mois Année -
+  + `dmy_hms`() - Jour Mois Année Heure Minute Seconde -
+  + Toute autre combinaison avec `y`, `m`, `d`, `h`, `m` et `s`.
   
 Les dates retournées par toutes les fonctions de **lubridate** sont au format "yyyy-mm-dd" (dd : day, mm : month, yyyy : year).
   
-**Lubridate** posède également des fonctions **now**() et **today**() donnant respectivement la date du jour avec ou sans l'heure.
+**lubridate** posède également des fonctions `now()` et `today()` donnant respectivement la date du jour avec ou sans l'heure.
 
 ### Exemples
 
@@ -118,9 +118,9 @@ quiz(
 
 ## Conversion entre les fuseaux horaires
 
-La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction **OlsonNames()**.
+La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction `OlsonNames()`.
 
-L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz**.
+L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction `with_tz`.
 
 ### Exemples
 
@@ -166,9 +166,9 @@ date_convertie_2
 
 ## Manipulation des dates
 
-Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
+Les dates sont des objets que l'on peut manipuler. Nous pouvons accéder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme avec tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
 
-Dans le package `lubridate` il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
+Dans le package **lubridate**, il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
 Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
@@ -207,9 +207,9 @@ Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 * `pm` : est-ce l'après-midi ?
 * `dst` : est-ce l'heure d'été ?
 
-Toutes les fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
+Toutes ces fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
 
-Prenons un exemple que nous garderons dans toute la suite de cette section comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
+Prenons un exemple que nous garderons dans toute la suite de cette section avec le 1er septembre 1999 à 11h 59m 59s. Ici on affecte la variable `date` à l'aide de la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
 
 
 ```{r exemple-1999-09_01, include=FALSE}
@@ -227,14 +227,14 @@ week(exemple_date)
 year(exemple_date) 
 ```
 
-Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abrégé et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. **Attention : ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
 ```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
 month(exemple_date) 
-# label abrévié
+# label abrégé
 month(exemple_date, label = T)
-# label non abrévié
+# label non abrégé
 month(exemple_date, label = T, abbr = F) 
 ```
 
@@ -476,16 +476,16 @@ ceiling_date(date_ex3, unit = "2 hours")
 ```
 
 
-## Périodes et Durées
+## Périodes et durées
 Le package **lubridate** permet également de réaliser des calculs sur des **périodes** ou des **durées**.
 
 Une **période** représente l'écoulement d'une quantité d'unités de temps *légal*. Elle est insensible aux années bisextiles, aux secondes intercalaires ou encore au passage à l'heure d'été ou d'hiver. Ainsi, ajouter une période d'un an à partir du 1er janvier 2020 aboutit au 1er janvier 2021, même si l'année 2020 se composait de 366 jours au lieu de 365.
 
-Les fonctions permettant de manipuler les périodes portent un nom similaire à celles permettant d'accéder aux éléments d'une date, avec un **s** en suffixe.
+Les fonctions permettant de manipuler les périodes portent un nom similaire à celles permettant d'accéder aux éléments d'une date, avec un `s` en suffixe.
 
 Une **durée** représente une quantité exacte de secondes. Le résultat en temps légal des opérations avec des durées dépend donc passage à l'heure d'été ou d'hiver, des secondes intercalaires et des années bisextiles.
 
-Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre **d**. Par exemple :
+Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu'elles sont préfixées par la lettre `d`. Par exemple :
 ```{r examples-durations, echo=TRUE, comment=''}
 # durée de 4 heures
 dd1 <- dhours(4)
@@ -532,12 +532,13 @@ quiz(
     answer("second(10800)"),
     answer("ddays(1/8)", correct = TRUE),
     answer("dhours(4) - dminutes(60)", correct = TRUE),
+    incorrect = "Attention à la confusion entre les fonctions de périodes et les fonctions de durées.",
     allow_retry = TRUE
   ),
   question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + days(2) + hours(6) ?",
     answer("2019-04-01 06:00:00 CEST", correct = TRUE),
-    answer("2019-04-01 07:00:00 CEST"),
-    answer("2019-04-01 06:00:00 UTC"),
+    answer("2019-04-01 07:00:00 CEST", message = "Il s'agit d'opérations sur des périodes et non des durées."),
+    answer("2019-04-01 06:00:00 UTC", message = "Attention aux fuseaux horaires !"),
     answer("2019-04-01 00:00:00 CEST"),
     allow_retry = TRUE
   )
@@ -560,7 +561,7 @@ date_arrivee
 
 ## Intervalles
 
-Un **intervalle** représente une durée physique entre deux dates. Il peut être déclaré à l'aide de la fonction **interval** ou de la syntaxe **%--%** :
+Un **intervalle** représente une durée physique entre deux dates. Il peut être déclaré à l'aide de la fonction `interval` ou de la syntaxe `%--%` :
 ```{r examples-intervals, echo=TRUE, comment=''}
 # 1ère syntaxe
 i1 <- interval(ymd("2020-09-01"),ymd("2021-05-31"))
@@ -570,7 +571,7 @@ i2 <- ymd("2020-09-01") %--% ymd("2021-05-31")
 i2
 ```
 
-Il est ensuite possible de déterminer si une date appartient ou non à un intervalle à l'aide de l'opérateur **%within%** :
+Il est ensuite possible de déterminer si une date appartient ou non à un intervalle à l'aide de l'opérateur `%within%` :
 ```{r examples-within, echo=TRUE, comment=''}
 # 1er test : le 1er janvier 2021 est inclus dans l'intervalle
 test1 <- ymd("2021-01-01") %within% i1
@@ -580,7 +581,7 @@ test2 <- ymd("2020-07-15") %within% i2
 test2
 ```
 
-D'autres fonctions permettent de comparer des intervalles : **int_aligns** vérifie si deux intervalles partagent une borne (de début ou de fin) tandis que **int_overlaps** détermine si deux intervalles ont au moins une seconde en commun.
+D'autres fonctions permettent de comparer des intervalles : `int_aligns` vérifie si deux intervalles partagent une borne (de début ou de fin) tandis que `int_overlaps` détermine si deux intervalles ont au moins une seconde en commun.
 ```{r examples-align-overlap, echo=TRUE, comment=''}
 # Définition de 3 intervalles
 i3 <- interval(ymd("2021-01-01"),ymd("2021-02-01"))
@@ -594,7 +595,7 @@ test4 <- int_overlaps(i3,i5)
 test4
 ```
 
-Citons encore **int_length** qui permet d'obtenir la longueur (en secondes) d'un intervalle et **int_shift** qui décale un intervalle en fonction d'une période donnée :
+Citons encore `int_length` qui permet d'obtenir la longueur (en secondes) d'un intervalle et `int_shift` qui décale un intervalle en fonction d'une période donnée :
 ```{r examples-length-shift, echo=TRUE, comment=''}
 # Quelle est la longueur de i3 ?
 int_length(i3)
@@ -643,7 +644,7 @@ intervalle_decale
 
 ## Horodatage
 
-Le package **lubridate** permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de "timbres", grâce à la fonction **stamp** :
+Le package **lubridate** permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de *timbres*, grâce à la fonction `stamp` :
 ```{r examples-stamps, echo=TRUE, comment=''}
 # 1ère étape : Définition du timbre à partir d'une phrase modèle passée en paramètre
 # La détection automatique est plus efficace en utilisant un jour supérieur au 12 et une année se terminant par un nombre supérieur à 31 dans le modèle
@@ -655,7 +656,7 @@ horodatage <- timbre(ymd_hm("2021-03-15 08h45"))
 horodatage
 ```
 
-Si le timbre d'horodatage ne contient qu'une date ou qu'une heure, l'usage des fonctions spécialisées **stamp_date** et **stamp_time** améliore encore l'efficacité de la détection automatique. En cas d'échec, il est toujours possible de préciser explicitement l'ordre attendu en paramètre supplémentaire, avec la syntaxe habituelle de description des dates :
+Si le timbre d'horodatage ne contient qu'une date ou qu'une heure, l'usage des fonctions spécialisées `stamp_date` et `stamp_time` améliore encore l'efficacité de la détection automatique. En cas d'échec, il est toujours possible de préciser explicitement l'ordre attendu en paramètre supplémentaire, avec la syntaxe habituelle de description des dates :
 ```{r examples-stamps-ambiguous, echo=TRUE, comment=''}
 # On précise explicitement l'ordre des paramètres pour éviter toute erreur
 timbre2 <- stamp("Reçu à 08h30 le 03/02/20","HM dmy")
