@@ -532,12 +532,13 @@ quiz(
     answer("second(10800)"),
     answer("ddays(1/8)", correct = TRUE),
     answer("dhours(4) - dminutes(60)", correct = TRUE),
+    incorrect = "Attention à la confusion entre les fonctions de périodes et les fonctions de durées.",
     allow_retry = TRUE
   ),
   question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + days(2) + hours(6) ?",
     answer("2019-04-01 06:00:00 CEST", correct = TRUE),
-    answer("2019-04-01 07:00:00 CEST"),
-    answer("2019-04-01 06:00:00 UTC"),
+    answer("2019-04-01 07:00:00 CEST", message = "Il s'agit d'opérations sur des périodes et non des durées."),
+    answer("2019-04-01 06:00:00 UTC", message = "Attention aux fuseaux horaires !"),
     answer("2019-04-01 00:00:00 CEST"),
     allow_retry = TRUE
   )
