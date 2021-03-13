@@ -240,7 +240,7 @@ month(exemple_date, label = T, abbr = F)
 
 Cela affiche également les autres mois sous forme de facteur et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
 
-A cela s'ajoute deux autres options : `week_start` et `locale` qui sont peu utilisées. L'option `week_start` défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
+A cela s'ajoute deux autres options : `week_start` et `locale` qui peuvent être utilisées dans le cas de dates internationales (conversion entre différents systèmes de dates). L'option `week_start` défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
 
 Deux fonctions ont un paramètre supplémentaire. Il s'agit des fonctions `quarter` et `semester` qui ont la syntaxe suivante : `fonction(x, with_year = FALSE)`. Le second paramètre indique si l'on veut concaténer ou non le numéro du semestre avec l'année. Par exemple, si on veut connaître le semestre du 1er janvier 2020 en utilisant `with_year = TRUE` on obtiendra 2020.1 car le 01/01/2020 est un jour du premier semestre.
 
