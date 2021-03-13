@@ -166,9 +166,9 @@ date_convertie_2
 
 ## Manipulation des dates
 
-Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
+Les dates sont des objets que l'on peut manipuler. Nous pouvons accéder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme avec tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
 
-Dans le package **lubridate** il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
+Dans le package **lubridate**, il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
 Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
@@ -207,9 +207,9 @@ Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 * `pm` : est-ce l'après-midi ?
 * `dst` : est-ce l'heure d'été ?
 
-Toutes les fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
+Toutes ces fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
 
-Prenons un exemple que nous garderons dans toute la suite de cette section comme le 1er septembre 1999 à 11h 59m 59s. Ici on affecte à la variable `date` la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
+Prenons un exemple que nous garderons dans toute la suite de cette section avec le 1er septembre 1999 à 11h 59m 59s. Ici on affecte la variable `date` à l'aide de la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
 
 
 ```{r exemple-1999-09_01, include=FALSE}
@@ -227,14 +227,14 @@ week(exemple_date)
 year(exemple_date) 
 ```
 
-Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abrégé et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. **Attention : ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
 ```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
 month(exemple_date) 
-# label abrévié
+# label abrégé
 month(exemple_date, label = T)
-# label non abrévié
+# label non abrégé
 month(exemple_date, label = T, abbr = F) 
 ```
 
