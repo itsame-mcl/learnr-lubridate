@@ -21,7 +21,7 @@ Pour contourner ce problème, les indications temporelles sont souvent stockées
 
 Les fonctionnalités de base de R permettent en partie de traiter ces questions, mais au prix de contraintes de syntaxe et d'un manque de souplesse.
 
-Le package **lubridate** permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
+Le package `lubridate` permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
 
 L'installation et le chargement s'effectuent à l'aide la commande suivante :
 
@@ -36,14 +36,14 @@ L'importation de données temporelles avec **lubridate** s'effectue en deux temp
 
 * Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heure (**h**), minute (**m**), seconde (**s**).
 * Appel de la fonction de **lubridate** reprenant l'ordre de ces éléments : 
-  + **ymd_hms**() - Année Mois Jour Heure Minute Seconde -
-  + **dmy**() - Jour Mois Année -
-  + **dmy_hms**() - Jour Mois Année Heure Minute Seconde -
-  + Toute autre combinaison avec **y**, **m**, **d**, **h**, **m** et **s**.
+  + `ymd_hms`() - Année Mois Jour Heure Minute Seconde -
+  + `dmy`() - Jour Mois Année -
+  + `dmy_hms`() - Jour Mois Année Heure Minute Seconde -
+  + Toute autre combinaison avec `y`, `m`, `d`, `h`, `m` et `s`.
   
 Les dates retournées par toutes les fonctions de **lubridate** sont au format "yyyy-mm-dd" (dd : day, mm : month, yyyy : year).
   
-**Lubridate** posède également des fonctions **now**() et **today**() donnant respectivement la date du jour avec ou sans l'heure.
+**lubridate** posède également des fonctions `now()` et `today()` donnant respectivement la date du jour avec ou sans l'heure.
 
 ### Exemples
 
@@ -118,9 +118,9 @@ quiz(
 
 ## Conversion entre les fuseaux horaires
 
-La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction **OlsonNames()**.
+La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction `OlsonNames()`.
 
-L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction **with_tz**.
+L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction `with_tz`.
 
 ### Exemples
 
@@ -168,7 +168,7 @@ date_convertie_2
 
 Les dates sont des objets que l'on peut manipuler. Nous pouvons accèder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
 
-Dans le package `lubridate` il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
+Dans le package **lubridate** il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
 Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
@@ -227,7 +227,7 @@ week(exemple_date)
 year(exemple_date) 
 ```
 
-Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abbrévié ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abbrévié et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. Mais **attention ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
 ```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
@@ -476,8 +476,8 @@ Exemples de manipulations de dates
 
 `today()`
 
-## Périodes et Durées
-Le package `lubridate`**` permet également de réaliser des calculs sur des **périodes** ou des **durées**.
+## Périodes et durées
+Le package **lubridate** permet également de réaliser des calculs sur des **périodes** ou des **durées**.
 
 Une **période** représente l'écoulement d'une quantité d'unités de temps *légal*. Elle est insensible aux années bisextiles, aux secondes intercalaires ou encore au passage à l'heure d'été ou d'hiver. Ainsi, ajouter une période d'un an à partir du 1er janvier 2020 aboutit au 1er janvier 2021, même si l'année 2020 se composait de 366 jours au lieu de 365.
 
@@ -643,7 +643,7 @@ intervalle_decale
 
 ## Horodatage
 
-Le package `lubridate` permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de "timbres", grâce à la fonction `stamp` :
+Le package **lubridate** permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de *timbres*, grâce à la fonction `stamp` :
 ```{r examples-stamps, echo=TRUE, comment=''}
 # 1ère étape : Définition du timbre à partir d'une phrase modèle passée en paramètre
 # La détection automatique est plus efficace en utilisant un jour supérieur au 12 et une année se terminant par un nombre supérieur à 31 dans le modèle
