@@ -23,7 +23,7 @@ Les fonctionnalités de base de R permettent en partie de traiter ces questions,
 
 Le package `lubridate` permet d'importer ou de générer des données temporelles, de réaliser des calculs de durées ou d'intervalles et d'accéder facilement aux différents éléments d'une date.
 
-L'installation et le chargement s'effectuent à l'aide la commande suivante :
+L'installation et le chargement s'effectuent à l'aide des commandes suivantes :
 
 ```{r installpack, message=FALSE, warning=FALSE, echo=TRUE}
 #install.packages("lubridate")
@@ -32,18 +32,18 @@ library(lubridate)
 
 ## Importation de dates
 
-L'importation de données temporelles avec **lubridate** s'effectue en deux temps :
+L'importation de données temporelles avec `lubridate` s'effectue en deux temps :
 
 * Identification de l'ordre dans lequel les éléments apparaissent dans la donnée source : année (**y**), mois (**m**), jour (**d**), heure (**h**), minute (**m**), seconde (**s**).
-* Appel de la fonction de **lubridate** reprenant l'ordre de ces éléments : 
-  + `ymd_hms`() - Année Mois Jour Heure Minute Seconde -
-  + `dmy`() - Jour Mois Année -
-  + `dmy_hms`() - Jour Mois Année Heure Minute Seconde -
+* Appel de la fonction de `lubridate` reprenant l'ordre de ces éléments : 
+  + `ymd_hms`() : Année Mois Jour Heure Minute Seconde
+  + `dmy`() : Jour Mois Année
+  + `dmy_hms`() : Jour Mois Année Heure Minute Seconde
   + Toute autre combinaison avec `y`, `m`, `d`, `h`, `m` et `s`.
   
-Les dates retournées par toutes les fonctions de **lubridate** sont au format "yyyy-mm-dd" (dd : day, mm : month, yyyy : year).
+Les dates retournées par toutes les fonctions de `lubridate` sont au format "yyyy-mm-dd" (dd : day, mm : month, yyyy : year).
   
-**lubridate** posède également des fonctions `now()` et `today()` donnant respectivement la date du jour avec ou sans l'heure.
+Le package `lubridate` posède également des fonctions `now()` et `today()` donnant respectivement la date du jour avec ou sans l'heure.
 
 ### Exemples
 
@@ -69,9 +69,21 @@ now()
 today() 
 ```
 
+```{r importquiz}
+quiz(
+  question("Quel est le format de date retourné par les fonctions `lubridate` ?",
+    answer("yyyy-dd-mm"),
+    answer("dd-mm-yyyy"),
+    answer("yyyy-mm-dd", correct = TRUE),
+    answer("dd-mm-yy"),
+    allow_retry = TRUE
+  )
+)
+```
+
 ### Exercices 
 
-Pour chaque exercice, choisissez la fonction du package **lubridate** permettant l'import correct de la date. 
+Pour chaque exercice, choisissez la fonction du package `lubridate` permettant l'import correct de la date. 
 
 ```{r dateimport1, exercise=TRUE, exercise.lines = 3, exercise.completion=TRUE}
 date_1 <- ("13/01/2021")
@@ -104,21 +116,9 @@ lubridate3 <- dmy_hm(date_3)
 lubridate3
 ```
 
-```{r importquiz}
-quiz(
-  question("Quel est le format de date retourné par les fonctions lubridate ?",
-    answer("yyyy-dd-mm"),
-    answer("dd-mm-yyyy"),
-    answer("yyyy-mm-dd", correct = TRUE),
-    answer("dd-mm-yy"),
-    allow_retry = TRUE
-  )
-)
-```
-
 ## Conversion entre les fuseaux horaires
 
-La liste des fuseaux horaires proposés par le package **lubridate** est disponible à l'aide de la fonction `OlsonNames()`.
+La liste des fuseaux horaires proposés par le package `lubridate` est disponible à l'aide de la fonction `OlsonNames()`.
 
 L'équivalent d'une date/heure dans un autre fuseau horaire peut-être obtenu à l'aide de la fonction `with_tz`.
 
@@ -168,13 +168,13 @@ date_convertie_2
 
 Les dates sont des objets que l'on peut manipuler. Nous pouvons accéder aux différents éléments d'une date : année, mois, jour, heure, etc. Comme avec tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d'une date.
 
-Dans le package **lubridate**, il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
+Dans le package `lubridate`, il existe de nombreuses fonctions pour accéder aux différents éléments d'une date.
 
 Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
 |  Date | Annee | Mois | Semaine | Jour | Heure |
 |:-----:|:-----:|:-----:|:-----:|:----:|:---:|
-|`date`|`year` `leap_year` `semester` `quarter`|`month`|`week`|`day` `wday` `qday` `yday` `hour`|`minute` `second` `am` `pm` `dst`|
+|`date`|`year` `leap_year` `semester` `quarter`|`month`|`week`|`day` `wday` `qday` `yday` |`hour` `minute` `second` `am` `pm` `dst`|
 
 **Date**
 
@@ -209,7 +209,7 @@ Voici une liste non exhausive des élements d'une date que l'on peut extraire :
 
 Toutes ces fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera `hour(x)` où `x` est une date dont on veut connaître l'heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.
 
-Prenons un exemple que nous garderons dans toute la suite de cette section avec le 1er septembre 1999 à 11h 59m 59s. Ici on affecte la variable `date` à l'aide de la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
+Prenons un exemple que nous garderons dans toute la suite de cette section avec le 1er septembre 1999 à 11h 59m 59s. Ici on affecte la variable `exemple_date` à l'aide de la fonction suivante : `dmy_hms("01-09-1999 11:59:59")` et la convertissons en date comme vu précédemment. Par exemple, si l'on veut extraire l'heure, le jour, le numéro de la semaine et l'année du 1er septembre 1999 on utilisera les commandes suivantes :
 
 
 ```{r exemple-1999-09_01, include=FALSE}
@@ -227,7 +227,7 @@ week(exemple_date)
 year(exemple_date) 
 ```
 
-Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte abrégé et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. **Attention : ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
+Au lieu d'un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : `label` et `abbr` qui prennent en paramètre un booléen. Par défaut `label` est défini à `FALSE` et `abbr` est défini à `TRUE`. `label` permet d'afficher un texte à la place d'un nombre et `abbr` permet de dire si l'on veut que le texte soit abrégé ou non. **Attention : ces options ne fonctionnent pas sur toutes les fonctions**. Entre autres, ces options seront disponibles pour `wday` mais pas pour `day`. Illustrons cela par des exemples.
 
 ```{r examples-labels-abbr, echo=TRUE, comment=''}
 # nombre
@@ -238,9 +238,9 @@ month(exemple_date, label = T)
 month(exemple_date, label = T, abbr = F) 
 ```
 
-Cela affiche également les autres mois et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
+Cela affiche également les autres mois sous forme de facteur et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
 
-A cela s'ajoute deux autres options : `week_start` et `locale`. L'option `week_start` défini le début de la semaine. Par convention, -1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
+A cela s'ajoute deux autres options : `week_start` et `locale` qui sont peu utilisées. L'option `week_start` défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
 
 Deux fonctions ont un paramètre supplémentaire. Il s'agit des fonctions `quarter` et `semester` qui ont la syntaxe suivante : `fonction(x, with_year = FALSE)`. Le second paramètre indique si l'on veut concaténer ou non le numéro du semestre avec l'année. Par exemple, si on veut connaître le semestre du 1er janvier 2020 en utilisant `with_year = TRUE` on obtiendra 2020.1 car le 01/01/2020 est un jour du premier semestre.
 
@@ -274,7 +274,7 @@ dst(exemple_date)
 
 **NB** Il existe également quelques variantes pour permettre de mettre une date au format ISO comme `isoyear` ou `isomonth`.
 
-En manipulant la fonction `month` il est également possible d'afficher tous les mois de l'année. En effet, si on prend le mois de janvier auquel on ajoute les mois restant au travers de la ligne de commande `month(dmy("01-01-2021") + months(0:11), label = T, abbr = F)`. Le resultat sera `janvier février mars avril mai juin juillet août septembre octobre novembre décembre`. Il est également possible de faire ces manipulations sur toutes les fonctions qui prennent en paramètre un label.
+En manipulant la fonction `month` il est également possible d'afficher tous les mois de l'année. En effet, si on prend le mois de janvier auquel on ajoute les mois restants au travers de la ligne de commande `month(dmy("01-01-2021") + months(0:11), label = T, abbr = F)`. Le resultat sera `janvier février mars avril mai juin juillet août septembre octobre novembre décembre`. Il est également possible de faire ces manipulations sur toutes les fonctions qui prennent en paramètre un label.
 
 ```{r quiz-compenents-date}
 quiz(
@@ -376,65 +376,71 @@ wday(dmy("01-02-2021") + wday(0:6), label = T, abbr = F)
 Ecrire et extraire tous les éléments de la date du 10 décembre 1990.
 ```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 11, exercise.completion = TRUE}
 # affectation de la date
+date_10dec1990 <- # votre code
 
 # extraction du jour
 
 # extraction du mois
 
+# extraction de l'année
 ```
 
 ```{r datecomponents-ex3-hint-1}
 # affectation de la date
-date_ex <- dmy("10-12-1990")
+date_10dec1990 <- dmy("10-12-1990")
 ```
 
 ```{r datecomponents-ex3-hint-2}
 # affectation de la date
-date_ex <- dmy("10-12-1990")
+date_10dec1990 <- dmy("10-12-1990")
 
 # extraction du jour
-day(date_ex)
+day(date_10dec1990)
 ```
 
 ```{r datecomponents-ex3-hint-3}
 # affectation de la date
-date_ex <- dmy("10-12-1990")
+date_10dec1990 <- dmy("10-12-1990")
 
 # extraction du jour
-day(date_ex)
+day(date_10dec1990)
 
 # extraction du mois
-month(date_ex)
+month(date_10dec1990)
 ```
 
 ```{r datecomponents-ex3-solution}
 # affectation de la date
-date_ex <- dmy("10-12-1990")
+date_10dec1990 <- dmy("10-12-1990")
 
 # extraction du jour
-day(date_ex)
+day(date_10dec1990)
 
 # extraction du mois
-month(date_ex)
+month(date_10dec1990)
 
 # extraction de l'année
-year(date_ex)
+year(date_10dec1990)
 ```
 
 
 ## Modification des dates
 
-Tout comme on peut accéder aux éléments d'une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion était prévue le lendemain à 14 heures. Pour cela on changera les attributs `day, hour, minute` et `second`
+Tout comme on peut accéder aux éléments d'une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion a dû être repoussée au lendemain à 14 heures. Nous devons donc mettre à jour la date, pour cela on changera les attributs `day, hour, minute` et `second`
 
 ```{r modif-date, echo=TRUE, include=TRUE, comment=''}
 # modification du jour
 day(exemple_date) <- 2
+
 # modification de l'heure
 hour(exemple_date) <- 14
+
 # modification de la minute
 minute(exemple_date) <- 0
+
 # modification de la seconde
 second(exemple_date) <- 0
+
 # affichage de la date
 exemple_date
 ```
@@ -444,6 +450,7 @@ Mais on peut également utliser la fonction `update` pour affecter toutes ces mo
 ```{r modif-date-update, echo=TRUE, include=TRUE, comment=''}
 # modification de la date avec la fonction update via les options day, hour, minute et second
 exemple_date <- update(exemple_date, day=2, hour=14, minute=0, second=0)
+
 # affichage de la date
 exemple_date
 ```
@@ -496,6 +503,9 @@ Cette fonction permet une granularité encore plus fine notamment via des arrond
 # arrondi bimensuel
 round_date(exemple_date, "bimonth")
 
+# arrondi par trimestre
+round_date(exemple_date, "quarter")
+
 # vérification que : arrondi trimestrielle = arrondi tous les trois mois
 round_date(exemple_date, "quarter") == round_date(exemple_date, "3 months")
 
@@ -539,7 +549,7 @@ date_ex1 <- dmy("29-02-2000")
 # modification du mois
 
 # affichage de la date modifiée
-
+date_ex1
 ```
 
 ```{r datemodif-ex1-hint-1}
@@ -584,7 +594,7 @@ date_ex2 <- dmy("29-02-2000")
 # modification du jour et du mois via la fonction update
 
 # affichage de la date
-
+date_ex2
 ```
 
 ```{r datemodif-ex2-hint}
@@ -642,7 +652,7 @@ date_ex3
 
 
 ## Périodes et durées
-Le package **lubridate** permet également de réaliser des calculs sur des **périodes** ou des **durées**.
+Le package `lubridate` permet également de réaliser des calculs sur des **périodes** ou des **durées**.
 
 Une **période** représente l'écoulement d'une quantité d'unités de temps *légal*. Elle est insensible aux années bisextiles, aux secondes intercalaires ou encore au passage à l'heure d'été ou d'hiver. Ainsi, ajouter une période d'un an à partir du 1er janvier 2020 aboutit au 1er janvier 2021, même si l'année 2020 se composait de 366 jours au lieu de 365.
 
@@ -714,7 +724,7 @@ quiz(
 
 A partir du 25 mars 2021, 12h00 (heure de Paris), ajoutez la durée permettant d'arriver au 1er avril 2021, 18h30 (heure de Paris)
 ```{r durationexo, exercise=TRUE, exercise.lines = 3, exercise.completion=TRUE}
-date_depart <-dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
+date_depart <- dmy_hm("25/03/2021 12h00", tz="Europe/Paris")
 date_arrivee <- # ICI code pour ajouter la durée
 date_arrivee
 ```
@@ -809,7 +819,7 @@ intervalle_decale
 
 ## Horodatage
 
-Le package **lubridate** permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de *timbres*, grâce à la fonction `stamp` :
+Le package `lubridate` permet enfin d'automatiser les tâches d'horodatage, en mémorisant et appliquant automatiquement des modèles de *timbres*, grâce à la fonction `stamp` :
 ```{r examples-stamps, echo=TRUE, comment=''}
 # 1ère étape : Définition du timbre à partir d'une phrase modèle passée en paramètre
 # La détection automatique est plus efficace en utilisant un jour supérieur au 12 et une année se terminant par un nombre supérieur à 31 dans le modèle
