@@ -302,73 +302,122 @@ quiz(
 ### Exercices
 
 Ecrire la date du 15 février 1970 puis à l'aide d'une fonction extraire le mois (numéro, nom abbrévié et non abbrévié).
-```{r datecomponents-ex1, exercise=TRUE, exercise.lines = 3, exercise.completion = TRUE}
+```{r datecomponents-ex1, exercise=TRUE, exercise.lines = 11, exercise.completion = TRUE}
+# affectation de la date
+date_15fev1970 <- # votre code
+
+# extraction du mois
+
+# extraction du mois avec label
+
+# extraction du mois avec label en entier
 
 ```
 
 ```{r datecomponents-ex1-hint-1}
+# affectation de la date
 date_15fev1970 <- dmy("15-02-1970")
 ```
 
 ```{r datecomponents-ex1-hint-2}
+# affectation de la date
 date_15fev1970 <- dmy("15-02-1970")
+
+# extraction du mois
 month(date_15fev1970)
 ```
 
 ```{r datecomponents-ex1-hint-3}
+# affectation de la date
 date_15fev1970 <- dmy("15-02-1970")
+
+# extraction du mois
 month(date_15fev1970)
+
+# extraction du mois avec label
 month(date_15fev1970, label = T)
 ```
 
 ```{r datecomponents-ex1-solution, exercise.reveal_solution = TRUE}
+# affectation de la date
 date_15fev1970 <- dmy("15-02-1970")
+
+# extraction du mois
 month(date_15fev1970)
+
+# extraction du mois avec label
 month(date_15fev1970, label = T)
+
+# extraction du mois avec label en entier
 month(date_15fev1970, label = T, abbr = F)
 ```
 
 Afficher tous les jours de la semaine à l'aide d'une commande en commençant par lundi. (*Remarque* Le 1er février 2021 est un lundi.)
 ```{r datecomponents-ex2, exercise=TRUE, exercise.lines = 3, exercise.completion = TRUE}
+# affichage de tous les jours de la semaine
 
 ```
 
 ```{r datecomponents-ex2-hint-1}
+# affichage de tous les jours de la semaine (numéros)
 wday(... + wday(0:6))
 ```
 
 ```{r datecomponents-ex2-hint-2}
+# affichage de tous les jours de la semaine (label)
 wday(... + wday(0:6), options)
 ```
 
 ```{r datecomponents-ex2-solution}
+# affichage de tous les jours de la semaine (label)
 wday(dmy("01-02-2021") + wday(0:6), label = T, abbr = F)
 ```
 
 Ecrire et extraire tous les éléments de la date du 10 décembre 1990.
-```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 4, exercise.completion = TRUE}
+```{r datecomponents-ex3, exercise=TRUE, exercise.lines = 11, exercise.completion = TRUE}
+# affectation de la date
+
+# extraction du jour
+
+# extraction du mois
 
 ```
 
 ```{r datecomponents-ex3-hint-1}
+# affectation de la date
 date_ex <- dmy("10-12-1990")
 ```
 
 ```{r datecomponents-ex3-hint-2}
+# affectation de la date
 date_ex <- dmy("10-12-1990")
+
+# extraction du jour
 day(date_ex)
 ```
 
 ```{r datecomponents-ex3-hint-3}
+# affectation de la date
 date_ex <- dmy("10-12-1990")
+
+# extraction du jour
 day(date_ex)
+
+# extraction du mois
 month(date_ex)
 ```
 
 ```{r datecomponents-ex3-solution}
+# affectation de la date
 date_ex <- dmy("10-12-1990")
+
+# extraction du jour
 day(date_ex)
+
+# extraction du mois
 month(date_ex)
+
+# extraction de l'année
 year(date_ex)
 ```
 
@@ -378,17 +427,24 @@ year(date_ex)
 Tout comme on peut accéder aux éléments d'une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion était prévue le lendemain à 14 heures. Pour cela on changera les attributs `day, hour, minute` et `second`
 
 ```{r modif-date, echo=TRUE, include=TRUE, comment=''}
+# modification du jour
 day(exemple_date) <- 2
+# modification de l'heure
 hour(exemple_date) <- 14
+# modification de la minute
 minute(exemple_date) <- 0
+# modification de la seconde
 second(exemple_date) <- 0
+# affichage de la date
 exemple_date
 ```
 
 Mais on peut également utliser la fonction `update` pour affecter toutes ces modifications simultanément comme on peut le voir dans l'exemple ci-dessous.
 
 ```{r modif-date-update, echo=TRUE, include=TRUE, comment=''}
+# modification de la date avec la fonction update via les options day, hour, minute et second
 exemple_date <- update(exemple_date, day=2, hour=14, minute=0, second=0)
+# affichage de la date
 exemple_date
 ```
 
@@ -474,33 +530,60 @@ quiz(
 ### Exercices
 
 Une personne a mis la date du 29 février 2000 alors qu'il s'agissait du 1er mars. Modifier la date en conséquence sans utiliser la fonction `update`.
-```{r datemodif-ex1, exercise=TRUE, exercise.lines = 5, exercise.completion = TRUE}
+```{r datemodif-ex1, exercise=TRUE, exercise.lines = 11, exercise.completion = TRUE}
+# affectation de la date
 date_ex1 <- dmy("29-02-2000")
+
+# modification du jour
+
+# modification du mois
+
+# affichage de la date modifiée
 
 ```
 
 ```{r datemodif-ex1-hint-1}
+# affectation de la date
 date_ex1 <- dmy("29-02-2000")
+
+# modification du jour
 day(date_ex1) <- 1
 
 ```
 
 ```{r datemodif-ex1-hint-2}
+# affectation de la date
 date_ex1 <- dmy("29-02-2000")
+
+# modification du jour
 day(date_ex1) <- 1
+
+# modification du mois
 month(date_ex1) <- 3
 ```
 
 ```{r datemodif-ex1-solution}
+# affectation de la date
 date_ex1 <- dmy("29-02-2000")
+
+# modification du jour
 day(date_ex1) <- 1
+
+# modification du mois
 month(date_ex1) <- 3
+
+# affichage de la date modifiée
 date_ex1
 ```
 
 Effectuer les mêmes modifications qu'à la question précédente mais via la fonction `update`.
-```{r datemodif-ex2, exercise=TRUE, exercise.lines = 3, exercise.completion = TRUE}
+```{r datemodif-ex2, exercise=TRUE, exercise.lines = 8, exercise.completion = TRUE}
+# affectation de la date
 date_ex2 <- dmy("29-02-2000")
+
+# modification du jour et du mois via la fonction update
+
+# affichage de la date
 
 ```
 
@@ -510,27 +593,38 @@ update(date_a_modifier, options)
 ```
 
 ```{r datemodif-ex2-solution}
+# affectation de la date
 date_ex2 <- dmy("29-02-2000")
+
+# modification du jour et du mois via la fonction update
 date_ex2 <- update(date_ex2, day = 1, month = 3)
+
+# affichage de la date
 date_ex2
 ```
 
 Ecrire la date suivante : `3 février 2017 à 16h 15m 32s` puis trouver comment l'arrondir de telle sorte qu'on obtienne `2017-02-03 18:00:00 UTC`. 
 
-```{r datemodif-ex3, exercise=TRUE, exercise.lines = 3, exercise.completion = TRUE}
+```{r datemodif-ex3, exercise=TRUE, exercise.lines = 8, exercise.completion = TRUE}
+# affectation de la date
 date_ex3 <- # votre code
 
-```
+# arrrondir la date
 
+# affichage de la date
+date_ex3
+```
 
 ```{r datemodif-ex3-hint-1}
 # affectation de la date
 date_ex3 <- dmy_hms("03-02-2017 16:15:32")
+
 ```
 
 ```{r datemodif-ex3-hint-2}
 # affectation de la date
 date_ex3 <- dmy_hms("03-02-2017 16:15:32")
+
 # arrrondi à l'entier supérieur avec une unité de 2 heures
 ceiling_date(date_ex3, unit = "2 hours")
 ```
@@ -538,8 +632,10 @@ ceiling_date(date_ex3, unit = "2 hours")
 ```{r datemodif-ex3-solution}
 # affectation de la date
 date_ex3 <- dmy_hms("03-02-2017 16:15:32")
+
 # arrrondi à l'entier supérieur avec une unité de 2 heures
 date_ex3 <- ceiling_date(date_ex3, unit = "2 hours")
+
 # affichage de la date
 date_ex3
 ```
