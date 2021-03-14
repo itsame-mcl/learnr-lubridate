@@ -1,11 +1,11 @@
 Package: learnr.lubridate
 Type: Package
 Title: Tutoriel libridate
-Version: 0.2.0
-Author: Alanna GENIN, Maxence LAGALLE, Kévin LEROY
-Maintainer: Maxence LAGALLE <maxence.lagalle@eleve.ensai.fr>
-License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
-Description: Permet d'apprendre la gestion des dates grâce au package lubridate
+Version: 1.0.0
+Author: Alanna GENIN <alanna.genin@eleve.ensai.fr>, Maxence LAGALLE <maxence.lagalle@eleve.ensai.fr>, Kévin LEROY <kevin.leroy@eleve.ensai.fr>
+Maintainer: Alanna GENIN <alanna.genin@eleve.ensai.fr>, Maxence LAGALLE <maxence.lagalle@eleve.ensai.fr>, Kévin LEROY <kevin.leroy@eleve.ensai.fr>
+License: CC-BY-NC-SA (>=4.0) + file LICENSE
+Description: Permet d'apprendre la gestion des dates grâce au package lubridate.
 Encoding: UTF-8
 LazyData: true
 Imports: learnr, lubridate

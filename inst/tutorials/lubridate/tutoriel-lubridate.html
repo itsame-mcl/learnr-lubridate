@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="false" />
+<meta name="allow-skip" content="false" />
+
+<title>Tutoriel lubridate</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<div id="section-introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Dans la plupart des logiciels et langages de programmation, le temps est considéré comme une simple valeur numérique à partir d’une date de référence.</p>
+<p>Pour R, cette “origine des temps” est le 1er janvier 1970, 00:00:00 UTC. En revanche, LibreOffice Calc utilise le 30 décembre 1899 sous Windows et le 1er janvier 1904 sous macOS. Microsoft Excel utilise le 1er janvier 1900… ces différences d’origine complexifient le traitement des données temporelles.</p>
+<p>Pour contourner ce problème, les indications temporelles sont souvent stockées sous un format textuel - par exemple “12/07/2014” - mais cela rend difficile la réalisation de calculs à partir de ces dates.</p>
+<p>Les fonctionnalités de base de R permettent en partie de traiter ces questions, mais au prix de contraintes de syntaxe et d’un manque de souplesse.</p>
+<p>Le package <code>lubridate</code> permet d’importer ou de générer des données temporelles, de réaliser des calculs de durées ou d’intervalles et d’accéder facilement aux différents éléments d’une date.</p>
+<p>L’installation et le chargement s’effectuent à l’aide des commandes suivantes :</p>
+<pre class="r"><code>#install.packages(&quot;lubridate&quot;)
+library(lubridate)</code></pre>
+</div>
+<div id="section-importation-de-dates" class="section level2">
+<h2>Importation de dates</h2>
+<p>L’importation de données temporelles avec <code>lubridate</code> s’effectue en deux temps :</p>
+<ul>
+<li>Identification de l’ordre dans lequel les éléments apparaissent dans la donnée source : année (<strong>y</strong>), mois (<strong>m</strong>), jour (<strong>d</strong>), heure (<strong>h</strong>), minute (<strong>m</strong>), seconde (<strong>s</strong>).</li>
+<li>Appel de la fonction de <code>lubridate</code> reprenant l’ordre de ces éléments :
+<ul>
+<li><code>ymd_hms</code>() : Année Mois Jour Heure Minute Seconde</li>
+<li><code>dmy</code>() : Jour Mois Année</li>
+<li><code>dmy_hms</code>() : Jour Mois Année Heure Minute Seconde</li>
+<li>Toute autre combinaison avec <code>y</code>, <code>m</code>, <code>d</code>, <code>h</code>, <code>m</code> et <code>s</code>.</li>
+</ul></li>
+</ul>
+<p>Les dates retournées par toutes les fonctions de <code>lubridate</code> sont au format “yyyy-mm-dd” (dd : day, mm : month, yyyy : year).</p>
+<p>Le package <code>lubridate</code> posède également des fonctions <code>now()</code> et <code>today()</code> donnant respectivement la date du jour avec ou sans l’heure.</p>
+<div id="section-exemples" class="section level3">
+<h3>Exemples</h3>
+<pre class="r"><code># Jour/Mois/Année
+date_1 &lt;- (&quot;25/12/2015&quot;) 
+lubridate1 &lt;- dmy(date_1)
+lubridate1 # Notre date est bien importée au format yyyy-mm-dd</code></pre>
+<pre><code>[1] &quot;2015-12-25&quot;</code></pre>
+<pre class="r"><code># Année/Jour/Mois
+date_2 &lt;- (&quot;2020-24-12&quot;) 
+lubridate2 &lt;- ydm(date_2)
+lubridate2</code></pre>
+<pre><code>[1] &quot;2020-12-24&quot;</code></pre>
+<pre class="r"><code># Jour/Mois/Année/Heure/Minute/Seconde
+date_3 &lt;- (&quot;12 Janvier 2021 à 15:30:05&quot;) 
+lubridate3 &lt;- dmy_hms(date_3)
+lubridate3</code></pre>
+<pre><code>[1] &quot;2021-01-12 15:30:05 UTC&quot;</code></pre>
+<pre class="r"><code># Date et heure actuelle
+now() </code></pre>
+<pre><code>[1] &quot;2021-03-14 11:22:04 CET&quot;</code></pre>
+<pre class="r"><code># Date actuelle seulement
+today() </code></pre>
+<pre><code>[1] &quot;2021-03-14&quot;</code></pre>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel panel-default">
+<div data-label="importquiz-1" class="tutorial-question panel-body">
+<div id="importquiz-1-answer_container" class="shiny-html-output"></div>
+<div id="importquiz-1-message_container" class="shiny-html-output"></div>
+<div id="importquiz-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+</div>
+<div id="section-exercices" class="section level3">
+<h3>Exercices</h3>
+<p>Pour chaque exercice, choisissez la fonction du package <code>lubridate</code> permettant l’import correct de la date.</p>
+<div class="tutorial-exercise" data-label="dateimport1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_1 &lt;- (&quot;13/01/2021&quot;)
+lubridate1 &lt;- # ICI code pour importer la date
+lubridate1</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="dateimport1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_1 &lt;- (&quot;13/01/2021&quot;)
+lubridate1 &lt;- dmy(date_1)
+lubridate1</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="dateimport2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_2 &lt;- (&quot;25-2021-10&quot;)
+lubridate2 &lt;- # ICI code pour importer la date
+lubridate2</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="dateimport2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_2 &lt;- (&quot;25-2021-10&quot;)
+lubridate2 &lt;- dym(date_2)
+lubridate2</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="dateimport3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_3 &lt;- (&quot;25 Février 2018 à 12H30&quot;)
+lubridate3 &lt;- # ICI code pour importer la date
+lubridate3</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="dateimport3-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_3 &lt;- (&quot;25 Février 2018 à 12H30&quot;)
+lubridate3 &lt;- dmy_hm(date_3)
+lubridate3</code></pre>
+</div>
+</div>
+</div>
+<div id="section-conversion-entre-les-fuseaux-horaires" class="section level2">
+<h2>Conversion entre les fuseaux horaires</h2>
+<p>La liste des fuseaux horaires proposés par le package <code>lubridate</code> est disponible à l’aide de la fonction <code>OlsonNames()</code>.</p>
+<p>L’équivalent d’une date/heure dans un autre fuseau horaire peut-être obtenu à l’aide de la fonction <code>with_tz</code>.</p>
+<div id="section-exemples-1" class="section level3">
+<h3>Exemples</h3>
+<pre class="r"><code>head(OlsonNames())</code></pre>
+<pre><code>[1] &quot;Africa/Abidjan&quot;     &quot;Africa/Accra&quot;       &quot;Africa/Addis_Ababa&quot;
+[4] &quot;Africa/Algiers&quot;     &quot;Africa/Asmara&quot;      &quot;Africa/Asmera&quot;     </code></pre>
+<pre class="r"><code># Importation de la date (Cf. paragraphe précédent)
+date &lt;- dmy_hm(&quot;25 Février 2018 à 12H30&quot;)
+
+# Conversion dans le fuseau horaire de Los Angeles
+date_convertie &lt;- with_tz(date, &quot;America/Los_Angeles&quot;)
+date_convertie</code></pre>
+<pre><code>[1] &quot;2018-02-25 04:30:00 PST&quot;</code></pre>
+<pre class="r"><code># Conversion dans le fuseau horaire de Abidjan
+date_convertie2 &lt;- with_tz(date, &quot;Africa/Abidjan&quot;)
+date_convertie2</code></pre>
+<pre><code>[1] &quot;2018-02-25 12:30:00 GMT&quot;</code></pre>
+</div>
+<div id="section-exercices-1" class="section level3">
+<h3>Exercices</h3>
+Convertissez la date suivante dans le fuseau horaire de Asmera :
+<div class="tutorial-exercise" data-label="dateconvert1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_1 &lt;- dmy_hm(&quot;25 Février 2018 à 12H30&quot;)
+date_convertie_1 &lt;- # ICI code pour convertir la date dans le fuseau horaire de Asmera
+date_convertie_1</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="dateconvert1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_1 &lt;- dmy_hm(&quot;25 Février 2018 à 12H30&quot;)
+date_convertie_1 &lt;- with_tz(date_1, &quot;Africa/Asmera&quot;)
+date_convertie_1</code></pre>
+</div>
+Convertissez maintenant la date dans le fuseau horaire de Los Angeles :
+<div class="tutorial-exercise" data-label="dateconvert2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_2 &lt;- dmy_hm(&quot;25 Février 2018 à 12H30&quot;)
+date_convertie_2 &lt;- # ICI code pour convertir la date dans le fuseau horaire de Los Angeles
+date_convertie_2</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="dateconvert2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_convertie_2 &lt;- with_tz(date_2, &quot;America/Los_Angeles&quot;)
+date_convertie_2</code></pre>
+</div>
+</div>
+</div>
+<div id="section-extraire-les-éléments-dune-date" class="section level2">
+<h2>Extraire les éléments d’une date</h2>
+<p>Les dates sont des objets que l’on peut manipuler. Nous pouvons accéder aux différents éléments d’une date : année, mois, jour, heure, etc. Comme avec tout autre objet R, nous pouvons les modifier mais également faire des calculs. Nous commencerons par extraire les éléments d’une date.</p>
+<p>Dans le package <code>lubridate</code>, il existe de nombreuses fonctions pour accéder aux différents éléments d’une date.</p>
+<p>Voici une liste non exhausive des élements d’une date que l’on peut extraire :</p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+<col width="15%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Date</th>
+<th align="center">Annee</th>
+<th align="center">Mois</th>
+<th align="center">Semaine</th>
+<th align="center">Jour</th>
+<th align="center">Heure</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>date</code></td>
+<td align="center"><code>year</code> <code>leap_year</code> <code>semester</code> <code>quarter</code></td>
+<td align="center"><code>month</code></td>
+<td align="center"><code>week</code></td>
+<td align="center"><code>day</code> <code>wday</code> <code>qday</code> <code>yday</code></td>
+<td align="center"><code>hour</code> <code>minute</code> <code>second</code> <code>am</code> <code>pm</code> <code>dst</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Date</strong></p>
+<ul>
+<li><code>date</code> : date au format année-mois-jour</li>
+<li><code>month</code> : mois</li>
+<li><code>week</code> : numéro de la semaine</li>
+</ul>
+<p><strong>Annee</strong></p>
+<ul>
+<li><code>year</code> : année</li>
+<li><code>leap_year</code> : est-ce une année bisextile ?</li>
+<li><code>semester</code> : numéro du semestre</li>
+<li><code>quarter</code> : numéro du trimestre</li>
+</ul>
+<p><strong>Jour</strong></p>
+<ul>
+<li><code>hour</code> : heure</li>
+<li><code>day</code> : jour du mois</li>
+<li><code>wday</code> : jour de la semaine</li>
+<li><code>qday</code> : jour du trimestre</li>
+<li><code>yday</code> : jour de l’année</li>
+</ul>
+<p><strong>Heure</strong></p>
+<ul>
+<li><code>minute</code> : minute</li>
+<li><code>second</code> : seconde</li>
+<li><code>am</code> : est-ce le matin ?</li>
+<li><code>pm</code> : est-ce l’après-midi ?</li>
+<li><code>dst</code> : est-ce l’heure d’été ?</li>
+</ul>
+<p>Toutes ces fonctions prennent au moins un paramètre : une date. Par exemple si on veut utiliser la fonction heure on utilisera <code>hour(x)</code> où <code>x</code> est une date dont on veut connaître l’heure. La majorité ces fonctions partagent les mêmes paramètres que nous verrons plus loin dans cette section.</p>
+<p>Prenons un exemple que nous garderons dans toute la suite de cette section avec le 1er septembre 1999 à 11h 59m 59s. Ici on affecte la variable <code>exemple_date</code> à l’aide de la fonction suivante : <code>dmy_hms("01-09-1999 11:59:59")</code> et la convertissons en date comme vu précédemment. Par exemple, si l’on veut extraire l’heure, le jour, le numéro de la semaine et l’année du 1er septembre 1999 on utilisera les commandes suivantes :</p>
+<pre class="r"><code># l&#39;heure
+hour(exemple_date)</code></pre>
+<pre><code>[1] 11</code></pre>
+<pre class="r"><code># le jour
+day(exemple_date) </code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code># le numéro de la semaine
+week(exemple_date) </code></pre>
+<pre><code>[1] 35</code></pre>
+<pre class="r"><code># l&#39;année
+year(exemple_date) </code></pre>
+<pre><code>[1] 1999</code></pre>
+<p>Au lieu d’un numéro on pourrait vouloir connaître le mois ou encore le jour (en lettres). Pour cela on dispose de deux paramètres : <code>label</code> et <code>abbr</code> qui prennent en paramètre un booléen. Par défaut <code>label</code> est défini à <code>FALSE</code> et <code>abbr</code> est défini à <code>TRUE</code>. <code>label</code> permet d’afficher un texte à la place d’un nombre et <code>abbr</code> permet de dire si l’on veut que le texte soit abrégé ou non. <strong>Attention : ces options ne fonctionnent pas sur toutes les fonctions</strong>. Entre autres, ces options seront disponibles pour <code>wday</code> mais pas pour <code>day</code>. Illustrons cela par des exemples.</p>
+<pre class="r"><code># nombre
+month(exemple_date) </code></pre>
+<pre><code>[1] 9</code></pre>
+<pre class="r"><code># label abrégé
+month(exemple_date, label = T)</code></pre>
+<pre><code>[1] sep
+12 Levels: jan &lt; fév &lt; mar &lt; avr &lt; mai &lt; jui &lt; jul &lt; aoû &lt; sep &lt; ... &lt; déc</code></pre>
+<pre class="r"><code># label non abrégé
+month(exemple_date, label = T, abbr = F) </code></pre>
+<pre><code>[1] septembre
+12 Levels: janvier &lt; février &lt; mars &lt; avril &lt; mai &lt; juin &lt; juillet &lt; ... &lt; décembre</code></pre>
+<p>Cela affiche également les autres mois sous forme de facteur et l’on voit bien qu’ils sont ordonnés selon un ordre chronologique.</p>
+<p>A cela s’ajoute deux autres options : <code>week_start</code> et <code>locale</code> qui peuvent être utilisées dans le cas de dates internationales (conversion entre différents systèmes de dates). L’option <code>week_start</code> défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à <code>locale</code>, il s’agit de définir les noms des jours ou mois (en fonction de la langue).</p>
+<p>Deux fonctions ont un paramètre supplémentaire. Il s’agit des fonctions <code>quarter</code> et <code>semester</code> qui ont la syntaxe suivante : <code>fonction(x, with_year = FALSE)</code>. Le second paramètre indique si l’on veut concaténer ou non le numéro du semestre avec l’année. Par exemple, si on veut connaître le semestre du 1er janvier 2020 en utilisant <code>with_year = TRUE</code> on obtiendra 2020.1 car le 01/01/2020 est un jour du premier semestre.</p>
+<p>Voici quelques exemples avec notre date du 01/09/1999.</p>
+<pre class="r"><code># trimestre sans année
+quarter(exemple_date, with_year = F) </code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code># trimestre avec année
+quarter(exemple_date, with_year = T) </code></pre>
+<pre><code>[1] 1999.3</code></pre>
+<pre class="r"><code># semestre sans année
+semester(exemple_date, with_year = F) </code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code># semestre avec année
+semester(exemple_date, with_year = T) </code></pre>
+<pre><code>[1] 1999.2</code></pre>
+<p>On remarque que toutes les fonctions retournent un nombre qui correspond soit à un numéro soit à un nombre d’heures, de jours, etc. (ou avec un label). Seules les fonctions <code>leap_year</code>, <code>am</code>, <code>pm</code> et <code>dst</code> renvoient un booléen (<code>True</code> ou <code>False</code>) comme le montrent les exemples ci-dessous.</p>
+<pre class="r"><code># année bisextile ?
+leap_year(exemple_date) </code></pre>
+<pre><code>[1] FALSE</code></pre>
+<pre class="r"><code># matin ?
+am(exemple_date) </code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code># après-midi ?
+pm(exemple_date) </code></pre>
+<pre><code>[1] FALSE</code></pre>
+<pre class="r"><code># heure d&#39;été ?
+dst(exemple_date) </code></pre>
+<pre><code>[1] FALSE</code></pre>
+<p><strong>NB</strong> Il existe également quelques variantes pour permettre de mettre une date au format ISO comme <code>isoyear</code> ou <code>isomonth</code>.</p>
+<p>En manipulant la fonction <code>month</code> il est également possible d’afficher tous les mois de l’année. En effet, si on prend le mois de janvier auquel on ajoute les mois restants au travers de la ligne de commande <code>month(dmy("01-01-2021") + months(0:11), label = T, abbr = F)</code>. Le resultat sera <code>janvier février mars avril mai juin juillet août septembre octobre novembre décembre</code>. Il est également possible de faire ces manipulations sur toutes les fonctions qui prennent en paramètre un label.</p>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel panel-default">
+<div data-label="quiz-compenents-date-1" class="tutorial-question panel-body">
+<div id="quiz-compenents-date-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-date-1-message_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-date-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div class="panel panel-default">
+<div data-label="quiz-compenents-date-2" class="tutorial-question panel-body">
+<div id="quiz-compenents-date-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-date-2-message_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-date-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div id="section-exercices-2" class="section level3">
+<h3>Exercices</h3>
+Ecrire la date du 15 février 1970 puis à l’aide d’une fonction extraire le mois (numéro, nom abbrévié et non abbrévié).
+<div class="tutorial-exercise" data-label="datecomponents-ex1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="11">
+<pre class="text"><code># affectation de la date
+date_15fev1970 &lt;- # votre code
+
+# extraction du mois
+
+# extraction du mois avec label
+
+# extraction du mois avec label en entier</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_15fev1970 &lt;- dmy(&quot;15-02-1970&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex1-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_15fev1970 &lt;- dmy(&quot;15-02-1970&quot;)
+
+# extraction du mois
+month(date_15fev1970)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex1-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_15fev1970 &lt;- dmy(&quot;15-02-1970&quot;)
+
+# extraction du mois
+month(date_15fev1970)
+
+# extraction du mois avec label
+month(date_15fev1970, label = T)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_15fev1970 &lt;- dmy(&quot;15-02-1970&quot;)
+
+# extraction du mois
+month(date_15fev1970)
+
+# extraction du mois avec label
+month(date_15fev1970, label = T)
+
+# extraction du mois avec label en entier
+month(date_15fev1970, label = T, abbr = F)</code></pre>
+</div>
+Afficher tous les jours de la semaine à l’aide d’une commande en commençant par lundi. (<em>Remarque</em> Le 1er février 2021 est un lundi.)
+<div class="tutorial-exercise" data-label="datecomponents-ex2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code># affichage de tous les jours de la semaine</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affichage de tous les jours de la semaine (numéros)
+wday(... + wday(0:6))</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex2-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affichage de tous les jours de la semaine (label)
+wday(... + wday(0:6), options)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affichage de tous les jours de la semaine (label)
+wday(dmy(&quot;01-02-2021&quot;) + wday(0:6), label = T, abbr = F)</code></pre>
+</div>
+Ecrire et extraire tous les éléments de la date du 10 décembre 1990.
+<div class="tutorial-exercise" data-label="datecomponents-ex3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="11">
+<pre class="text"><code># affectation de la date
+date_10dec1990 &lt;- # votre code
+
+# extraction du jour
+
+# extraction du mois
+
+# extraction de l&#39;année</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_10dec1990 &lt;- dmy(&quot;10-12-1990&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex3-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_10dec1990 &lt;- dmy(&quot;10-12-1990&quot;)
+
+# extraction du jour
+day(date_10dec1990)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex3-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_10dec1990 &lt;- dmy(&quot;10-12-1990&quot;)
+
+# extraction du jour
+day(date_10dec1990)
+
+# extraction du mois
+month(date_10dec1990)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datecomponents-ex3-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_10dec1990 &lt;- dmy(&quot;10-12-1990&quot;)
+
+# extraction du jour
+day(date_10dec1990)
+
+# extraction du mois
+month(date_10dec1990)
+
+# extraction de l&#39;année
+year(date_10dec1990)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-modification-des-dates" class="section level2">
+<h2>Modification des dates</h2>
+<p>Tout comme on peut accéder aux éléments d’une date, on peut modifier ces éléments. Reprennons notre date exemple, imaginons que la date du 1er septembre 1999 à 11 h 59 min 59 sec est une date de réunion. Disons que la réunion a dû être repoussée au lendemain à 14 heures. Nous devons donc mettre à jour la date, pour cela on changera les attributs <code>day, hour, minute</code> et <code>second</code></p>
+<pre class="r"><code># modification du jour
+day(exemple_date) &lt;- 2
+
+# modification de l&#39;heure
+hour(exemple_date) &lt;- 14
+
+# modification de la minute
+minute(exemple_date) &lt;- 0
+
+# modification de la seconde
+second(exemple_date) &lt;- 0
+
+# affichage de la date
+exemple_date</code></pre>
+<pre><code>[1] &quot;1999-09-02 14:00:00 UTC&quot;</code></pre>
+<p>Mais on peut également utliser la fonction <code>update</code> pour affecter toutes ces modifications simultanément comme on peut le voir dans l’exemple ci-dessous.</p>
+<pre class="r"><code># modification de la date avec la fonction update via les options day, hour, minute et second
+exemple_date &lt;- update(exemple_date, day=2, hour=14, minute=0, second=0)
+
+# affichage de la date
+exemple_date</code></pre>
+<pre><code>[1] &quot;1999-09-02 14:00:00 UTC&quot;</code></pre>
+<p>Une autre façon de modifier une date consiste à l’arrondir. Pour cela nous disposons de trois fonctions qui sont les suivantes :</p>
+<ul>
+<li><code>floor_date</code> qui arrondit à l’unité la plus proche par valeurs inférieures</li>
+<li><code>round_date</code> qui arrondit à l’unité la plus proche</li>
+<li><code>ceiling_date</code> qui arrondit à l’unité la plus proche par valeurs supérieures</li>
+</ul>
+<p>Ces trois fonctions prennent deux paramètres : une date et l’unité de l’arrondi <code>unit</code>. L’unité peut prendre plusieurs niveaux de précision : miliseconde, seconde, minute, heure, jour, semaine, mois, etc.</p>
+<pre class="r"><code># par défaut
+round_date(exemple_date)</code></pre>
+<pre><code>[1] &quot;1999-09-01 11:59:59 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi de l&#39;heure par valeurs inférieures
+floor_date(exemple_date, unit = &quot;hour&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 11:00:00 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi de l&#39;heure à la valeur la plus proche
+round_date(exemple_date, unit = &quot;hour&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 12:00:00 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi de l&#39;heure par valeurs supérieures
+ceiling_date(exemple_date, unit = &quot;hour&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 12:00:00 UTC&quot;</code></pre>
+<p>On peut même aller plus loin dans la précision en spécifiant le nombre de l’unité : 10 secondes, 5 minutes, 2 heures, 3 mois et ainsi de suite comme illustré dans les exemples ci-dessous. Pour arrondir aux millisecondes près on ajoute 32 secondes à notre date.</p>
+<pre class="r"><code>exemple_date &lt;- ymd_hms(&quot;1999-09-01 11:59:59.32&quot;)
+
+# arrondi aux 5 millièmes de secondes
+round_date(exemple_date, &quot;.5s&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 11:59:59 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi aux 5 minutes près 
+round_date(exemple_date, &quot;5 mins&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 12:00:00 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi à 5 heures près par valeurs supérieures
+ceiling_date(exemple_date, &quot;5 hours&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 15:00:00 UTC&quot;</code></pre>
+<p>Cette fonction permet une granularité encore plus fine notamment via des arrondis bimensuels, semestriels, trimestriels, biannuels et annuels comme dans les exemples ci-dessous. On peut même vérifier qu’un arrondi par trimestre correspond à un arrondi tous les 3 mois.</p>
+<pre class="r"><code># arrondi bimensuel
+round_date(exemple_date, &quot;bimonth&quot;)</code></pre>
+<pre><code>[1] &quot;1999-09-01 UTC&quot;</code></pre>
+<pre class="r"><code># arrondi par trimestre
+round_date(exemple_date, &quot;quarter&quot;)</code></pre>
+<pre><code>[1] &quot;1999-10-01 UTC&quot;</code></pre>
+<pre class="r"><code># vérification que : arrondi trimestrielle = arrondi tous les trois mois
+round_date(exemple_date, &quot;quarter&quot;) == round_date(exemple_date, &quot;3 months&quot;)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code># arrondi biannuel
+round_date(exemple_date, &quot;halfyear&quot;)</code></pre>
+<pre><code>[1] &quot;1999-07-01 UTC&quot;</code></pre>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel panel-default">
+<div data-label="quiz-round-date-1" class="tutorial-question panel-body">
+<div id="quiz-round-date-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz-round-date-1-message_container" class="shiny-html-output"></div>
+<div id="quiz-round-date-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div class="panel panel-default">
+<div data-label="quiz-round-date-2" class="tutorial-question panel-body">
+<div id="quiz-round-date-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz-round-date-2-message_container" class="shiny-html-output"></div>
+<div id="quiz-round-date-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div id="section-exercices-3" class="section level3">
+<h3>Exercices</h3>
+Une personne a mis la date du 29 février 2000 alors qu’il s’agissait du 1er mars. Modifier la date en conséquence sans utiliser la fonction <code>update</code>.
+<div class="tutorial-exercise" data-label="datemodif-ex1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="11">
+<pre class="text"><code># affectation de la date
+date_ex1 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour
+
+# modification du mois
+
+# affichage de la date modifiée
+date_ex1</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex1 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour
+day(date_ex1) &lt;- 1</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex1-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex1 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour
+day(date_ex1) &lt;- 1
+
+# modification du mois
+month(date_ex1) &lt;- 3</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex1 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour
+day(date_ex1) &lt;- 1
+
+# modification du mois
+month(date_ex1) &lt;- 3
+
+# affichage de la date modifiée
+date_ex1</code></pre>
+</div>
+Effectuer les mêmes modifications qu’à la question précédente mais via la fonction <code>update</code>.
+<div class="tutorial-exercise" data-label="datemodif-ex2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<pre class="text"><code># affectation de la date
+date_ex2 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour et du mois via la fonction update
+
+# affichage de la date
+date_ex2</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex2-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>update(date_a_modifier, options)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex2 &lt;- dmy(&quot;29-02-2000&quot;)
+
+# modification du jour et du mois via la fonction update
+date_ex2 &lt;- update(date_ex2, day = 1, month = 3)
+
+# affichage de la date
+date_ex2</code></pre>
+</div>
+<p>Ecrire la date suivante : <code>3 février 2017 à 16h 15m 32s</code> puis trouver comment l’arrondir de telle sorte qu’on obtienne <code>2017-02-03 18:00:00 UTC</code>.</p>
+<div class="tutorial-exercise" data-label="datemodif-ex3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<pre class="text"><code># affectation de la date
+date_ex3 &lt;- # votre code
+
+# arrrondir la date
+
+# affichage de la date
+date_ex3</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex3 &lt;- dmy_hms(&quot;03-02-2017 16:15:32&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex3-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex3 &lt;- dmy_hms(&quot;03-02-2017 16:15:32&quot;)
+
+# arrrondi à l&#39;entier supérieur avec une unité de 2 heures
+ceiling_date(date_ex3, unit = &quot;2 hours&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="datemodif-ex3-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># affectation de la date
+date_ex3 &lt;- dmy_hms(&quot;03-02-2017 16:15:32&quot;)
+
+# arrrondi à l&#39;entier supérieur avec une unité de 2 heures
+date_ex3 &lt;- ceiling_date(date_ex3, unit = &quot;2 hours&quot;)
+
+# affichage de la date
+date_ex3</code></pre>
+</div>
+</div>
+</div>
+<div id="section-périodes-et-durées" class="section level2">
+<h2>Périodes et durées</h2>
+<p>Le package <code>lubridate</code> permet également de réaliser des calculs sur des <strong>périodes</strong> ou des <strong>durées</strong>.</p>
+<p>Une <strong>période</strong> représente l’écoulement d’une quantité d’unités de temps <em>légal</em>. Elle est insensible aux années bisextiles, aux secondes intercalaires ou encore au passage à l’heure d’été ou d’hiver. Ainsi, ajouter une période d’un an à partir du 1er janvier 2020 aboutit au 1er janvier 2021, même si l’année 2020 se composait de 366 jours au lieu de 365.</p>
+<p>Les fonctions permettant de manipuler les périodes portent un nom similaire à celles permettant d’accéder aux éléments d’une date, avec un <code>s</code> en suffixe.</p>
+<p>Une <strong>durée</strong> représente une quantité exacte de secondes. Le résultat en temps légal des opérations avec des durées dépend donc passage à l’heure d’été ou d’hiver, des secondes intercalaires et des années bisextiles.</p>
+<p>Les fonctions permettant de manipuler les durées portent un nom similaire à celles dédiées aux périodes, puisqu’elles sont préfixées par la lettre <code>d</code>. Par exemple :</p>
+<pre class="r"><code># durée de 4 heures
+dd1 &lt;- dhours(4)
+dd1</code></pre>
+<pre><code>[1] &quot;14400s (~4 hours)&quot;</code></pre>
+<pre class="r"><code># période de 2 semaines
+dd2 &lt;- weeks(2)
+dd2</code></pre>
+<pre><code>[1] &quot;14d 0H 0M 0S&quot;</code></pre>
+<pre class="r"><code># millisecondes
+dd3 &lt;- dmilliseconds(2850)
+dd3</code></pre>
+<pre><code>[1] &quot;2.85s&quot;</code></pre>
+<p>Une période ou une durée peuvent être ajoutées ou retranchées à une date, le résultat est alors reconverti en temps légal :</p>
+<pre class="r"><code># Ajout d&#39;une période de 2 heures, le 28 mars 2021 02h00 étant le début de l&#39;heure d&#39;été
+cp1 &lt;- ymd_hm(&quot;2021-03-28 01:30&quot;,tz=&quot;Europe/Paris&quot;) + hours(2)
+cp1</code></pre>
+<pre><code>[1] &quot;2021-03-28 03:30:00 CEST&quot;</code></pre>
+<pre class="r"><code># Ajout d&#39;une durée de 2 heures au lieu d&#39;une période
+cd1 &lt;- ymd_hm(&quot;2021-03-28 01:30&quot;,tz=&quot;Europe/Paris&quot;) + dhours(2)
+cd1 # On remarque que l&#39;heure affichée est 04h30 et non 03h30, soit le résultat du strict écoulement de 7200 secondes compte tenu du changement d&#39;heure</code></pre>
+<pre><code>[1] &quot;2021-03-28 04:30:00 CEST&quot;</code></pre>
+<pre class="r"><code># Retrait d&#39;une période d&#39;un an, l&#39;année 2020 étant bisextile
+cp2 &lt;- ymd_hm(&quot;2020-07-01 00:00&quot;) - years(1)
+cp2</code></pre>
+<pre><code>[1] &quot;2019-07-01 UTC&quot;</code></pre>
+<pre class="r"><code># Retrait d&#39;une durée d&#39;un an
+cd2 &lt;- ymd_hm(&quot;2020-07-01 00:00&quot;) - dyears(1)
+cd2 # la durée physique d&#39;une année est de 365 jours et 6 heures, d&#39;où l&#39;heure affichée de 18h00</code></pre>
+<pre><code>[1] &quot;2019-07-01 18:00:00 UTC&quot;</code></pre>
+<pre class="r"><code># Ajout d&#39;une durée de 120 minutes, le 31 octobre 2021 03h00 étant le début de l&#39;heure d&#39;hiver 
+cd3 &lt;- ymd_hm(&quot;2021-10-31 01:30&quot;,tz=&quot;Europe/Paris&quot;) + dminutes(120)
+cd3 # On remarque que l&#39;heure affichée est 02h30 et non 03h30</code></pre>
+<pre><code>[1] &quot;2021-10-31 02:30:00 CET&quot;</code></pre>
+<p>A noter qu’en l’absence de précision d’un fuseau horaire, le temps UTC s’applique. Or, ce dernier est insensible au passage à l’heure d’été ou d’hiver, même avec des durées.</p>
+<pre class="r"><code># Ajout d&#39;une durée de 2 heures, le 28 mars 2021 02h00 étant le début de l&#39;heure d&#39;été
+cd4 &lt;- ymd_hm(&quot;2021-03-28 01:30&quot;) + dhours(2)
+cd4 # Ici, l&#39;heure affichée est 03h30, car le temps UTC ne varie pas</code></pre>
+<pre><code>[1] &quot;2021-03-28 03:30:00 UTC&quot;</code></pre>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel panel-default">
+<div data-label="quiz-compenents-durations-1" class="tutorial-question panel-body">
+<div id="quiz-compenents-durations-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-durations-1-message_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-durations-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div class="panel panel-default">
+<div data-label="quiz-compenents-durations-2" class="tutorial-question panel-body">
+<div id="quiz-compenents-durations-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-durations-2-message_container" class="shiny-html-output"></div>
+<div id="quiz-compenents-durations-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div id="section-exercice" class="section level4">
+<h4>Exercice</h4>
+A partir du 25 mars 2021, 12h00 (heure de Paris), ajoutez la durée permettant d’arriver au 1er avril 2021, 18h30 (heure de Paris)
+<div class="tutorial-exercise" data-label="durationexo" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>date_depart &lt;- dmy_hm(&quot;25/03/2021 12h00&quot;, tz=&quot;Europe/Paris&quot;)
+date_arrivee &lt;- # ICI code pour ajouter la durée
+date_arrivee</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="durationexo-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date_depart &lt;-dmy_hm(&quot;25/03/2021 12h00&quot;, tz=&quot;Europe/Paris&quot;)
+date_arrivee &lt;- date_depart + ddays(6) + dhours(5) + dminutes(30)
+date_arrivee</code></pre>
+</div>
+</div>
+</div>
+<div id="section-intervalles" class="section level2">
+<h2>Intervalles</h2>
+<p>Un <strong>intervalle</strong> représente une durée physique entre deux dates. Il peut être déclaré à l’aide de la fonction <code>interval</code> ou de la syntaxe <code>%--%</code> :</p>
+<pre class="r"><code># 1ère syntaxe
+i1 &lt;- interval(ymd(&quot;2020-09-01&quot;),ymd(&quot;2021-05-31&quot;))
+i1</code></pre>
+<pre><code>[1] 2020-09-01 UTC--2021-05-31 UTC</code></pre>
+<pre class="r"><code># 2ème syntaxe, pour le même intervalle
+i2 &lt;- ymd(&quot;2020-09-01&quot;) %--% ymd(&quot;2021-05-31&quot;)
+i2</code></pre>
+<pre><code>[1] 2020-09-01 UTC--2021-05-31 UTC</code></pre>
+<p>Il est ensuite possible de déterminer si une date appartient ou non à un intervalle à l’aide de l’opérateur <code>%within%</code> :</p>
+<pre class="r"><code># 1er test : le 1er janvier 2021 est inclus dans l&#39;intervalle
+test1 &lt;- ymd(&quot;2021-01-01&quot;) %within% i1
+test1</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code># 2ème test : le 15 juillet 2020 n&#39;est pas inclus dans l&#39;intervalle
+test2 &lt;- ymd(&quot;2020-07-15&quot;) %within% i2
+test2</code></pre>
+<pre><code>[1] FALSE</code></pre>
+<p>D’autres fonctions permettent de comparer des intervalles : <code>int_aligns</code> vérifie si deux intervalles partagent une borne (de début ou de fin) tandis que <code>int_overlaps</code> détermine si deux intervalles ont au moins une seconde en commun.</p>
+<pre class="r"><code># Définition de 3 intervalles
+i3 &lt;- interval(ymd(&quot;2021-01-01&quot;),ymd(&quot;2021-02-01&quot;))
+i4 &lt;- interval(ymd(&quot;2021-01-01&quot;),ymd(&quot;2021-03-01&quot;))
+i5 &lt;- interval(ymd(&quot;2021-01-15&quot;),ymd(&quot;2021-02-15&quot;))
+# i3 et i4 ont la borne de début du 1er janvier 2021 en commun
+test3 &lt;- int_aligns(i3,i4)
+test3</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code># i3 et i5 ont des secondes en commun
+test4 &lt;- int_overlaps(i3,i5)
+test4</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<p>Citons encore <code>int_length</code> qui permet d’obtenir la longueur (en secondes) d’un intervalle et <code>int_shift</code> qui décale un intervalle en fonction d’une période donnée :</p>
+<pre class="r"><code># Quelle est la longueur de i3 ?
+int_length(i3)</code></pre>
+<pre><code>[1] 2678400</code></pre>
+<pre class="r"><code># Décalage de i4 d&#39;une période de 15 jours
+i6 &lt;- int_shift(i4,days(15))
+i6</code></pre>
+<pre><code>[1] 2021-01-16 UTC--2021-03-16 UTC</code></pre>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel panel-default">
+<div data-label="quiz-intervals-1" class="tutorial-question panel-body">
+<div id="quiz-intervals-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz-intervals-1-message_container" class="shiny-html-output"></div>
+<div id="quiz-intervals-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div>
+<div id="section-exercices-4" class="section level4">
+<h4>Exercices</h4>
+Ecrivez un test permettant de vérifier que le 29 février 2020 se situe bien entre le 1er février 2020 et le 1er mars 2020.
+<div class="tutorial-exercise" data-label="interval-exo1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>intervalle &lt;- interval(ymd(&quot;2020-02-01&quot;),ymd(&quot;2020-03-01&quot;))
+test &lt;- # ICI code pour tester l&#39;inclusion
+test</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="interval-exo1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>intervalle &lt;- interval(ymd(&quot;2020-02-01&quot;),ymd(&quot;2020-03-01&quot;))
+test &lt;- ymd(&quot;2020-02-29&quot;) %within% intervalle
+test</code></pre>
+</div>
+Décalez l’intervalle ci-dessous avec la fonction dédiée afin de le faire débuter au 1er juillet 2021.
+<div class="tutorial-exercise" data-label="interval-exo2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>intervalle &lt;- interval(ymd(&quot;2020-10-01&quot;),ymd(&quot;2020-12-30&quot;))
+intervalle_decale &lt;- # ICI code pour décaler l&#39;intervalle
+intervalle_decale</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="interval-exo2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>intervalle &lt;- interval(ymd(&quot;2020-10-01&quot;),ymd(&quot;2020-12-30&quot;))
+intervalle_decale &lt;- int_shift(intervalle,months(-3))
+intervalle_decale</code></pre>
+</div>
+</div>
+</div>
+<div id="section-horodatage" class="section level2">
+<h2>Horodatage</h2>
+<p>Le package <code>lubridate</code> permet enfin d’automatiser les tâches d’horodatage, en mémorisant et appliquant automatiquement des modèles de <em>timbres</em>, grâce à la fonction <code>stamp</code> :</p>
+<pre class="r"><code># 1ère étape : Définition du timbre à partir d&#39;une phrase modèle passée en paramètre
+# La détection automatique est plus efficace en utilisant un jour supérieur au 12 et une année se terminant par un nombre supérieur à 31 dans le modèle
+# Pour distinguer les minutes ou les secondes des heures, il est recommandé d&#39;utiliser des nombres supérieurs à 24
+timbre &lt;- stamp(&quot;Lu et approuvé le 23 janvier 2085 à 17h30&quot;)</code></pre>
+<pre><code>Using: &quot;Lu et approuvé le %d %B %Y à %Hh%M&quot;</code></pre>
+<pre class="r"><code># 2ème étape : Application du timbre à une date passée en paramètre
+# La fonction à appeler correspond au nom du timbre déterminé dans la 1ère étape
+horodatage &lt;- timbre(ymd_hm(&quot;2021-03-15 08h45&quot;))
+horodatage</code></pre>
+<pre><code>[1] &quot;Lu et approuvé le 15 mars 2021 à 08h45&quot;</code></pre>
+<p>Si le timbre d’horodatage ne contient qu’une date ou qu’une heure, l’usage des fonctions spécialisées <code>stamp_date</code> et <code>stamp_time</code> améliore encore l’efficacité de la détection automatique. En cas d’échec, il est toujours possible de préciser explicitement l’ordre attendu en paramètre supplémentaire, avec la syntaxe habituelle de description des dates :</p>
+<pre class="r"><code># On précise explicitement l&#39;ordre des paramètres pour éviter toute erreur
+timbre2 &lt;- stamp(&quot;Reçu à 08h30 le 03/02/20&quot;,&quot;HM dmy&quot;)</code></pre>
+<pre><code>Multiple formats matched: &quot;Reçu à %Hh%M le %d/%Om/%y&quot;(1), &quot;Reçu à %Hh%M le %d/%m/%y&quot;(1)</code></pre>
+<pre><code>Using: &quot;Reçu à %Hh%M le %d/%Om/%y&quot;</code></pre>
+<pre class="r"><code>timbre2(ymd_hm(&quot;2021-04-29 22h48&quot;))</code></pre>
+<pre><code>[1] &quot;Reçu à 22h48 le 29/04/21&quot;</code></pre>
+<div id="section-exercice-1" class="section level4">
+<h4>Exercice</h4>
+Définissez puis utilisez un tampon d’horodatage permattent d’écrire automatiquement la phrase “Exportation terminée le 03/06/2019 à 14:26:53”
+<div class="tutorial-exercise" data-label="horodatage-exo" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="4">
+<pre class="text"><code>date &lt;- ymd_hms(&quot;2019-06-03 14:26:53&quot;)
+tampon &lt;- # ICI code pour définir le tampon
+horodatage &lt;- # ICI code pour utiliser le tampon
+horodatage</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="horodatage-exo-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>date &lt;- ymd_hms(&quot;2019-06-03 14:26:53&quot;)
+tampon &lt;- stamp(&quot;Exportation terminée le 25/02/2096 à 15:35:45&quot;)
+horodatage &lt;- tampon(date)
+horodatage</code></pre>
+</div>
+
+<script type="application/shiny-prerendered" data-context="server-start">
+library(learnr)
+library(lubridate)
+knitr::opts_chunk$set(echo = FALSE)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "importquiz-1",     question = structure("Quel est le format de date retourné par les fonctions <code>lubridate<\u002fcode> ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_b48cddb",         option = "yyyy-dd-mm", value = "yyyy-dd-mm", label = structure("yyyy-dd-mm", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_56e257c",         option = "dd-mm-yyyy", value = "dd-mm-yyyy", label = structure("dd-mm-yyyy", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_21c77b4",         option = "yyyy-mm-dd", value = "yyyy-mm-dd", label = structure("yyyy-mm-dd", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_69847e8",         option = "dd-mm-yy", value = "dd-mm-yy", label = structure("dd-mm-yy", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "importquiz-1-answer", question = "importquiz-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nQuel est le format de date retourné par les fonctions <code>lubridate<\u002fcode> ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1389719597.85286, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-dateimport1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dateimport1-code-editor`)), session)
+output$`tutorial-exercise-dateimport1-output` <- renderUI({
+  `tutorial-exercise-dateimport1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-dateimport2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dateimport2-code-editor`)), session)
+output$`tutorial-exercise-dateimport2-output` <- renderUI({
+  `tutorial-exercise-dateimport2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-dateimport3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dateimport3-code-editor`)), session)
+output$`tutorial-exercise-dateimport3-output` <- renderUI({
+  `tutorial-exercise-dateimport3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-dateconvert1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dateconvert1-code-editor`)), session)
+output$`tutorial-exercise-dateconvert1-output` <- renderUI({
+  `tutorial-exercise-dateconvert1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-dateconvert2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dateconvert2-code-editor`)), session)
+output$`tutorial-exercise-dateconvert2-output` <- renderUI({
+  `tutorial-exercise-dateconvert2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-compenents-date-1",     question = structure("Quel(s) paramètre(s) prend la fonction <code>day<\u002fcode>?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_71a3b54",         option = "week_start", value = "week_start", label = structure("week_start", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_de4aa6",         option = "label", value = "label", label = structure("label", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_e6b80bd",         option = "une date", value = "une date", label = structure("une date", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5ca8464",         option = "locale", value = "locale", label = structure("locale", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_bc635dd",         option = "abbr", value = "abbr", label = structure("abbr", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-compenents-date-1-answer", question = "quiz-compenents-date-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nQuel(s) paramètre(s) prend la fonction <code>day<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = TRUE, allow_retry = FALSE,     seed = 1368338076.86282, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz-compenents-date-2",     question = structure("Quel(s) paramètre(s) prend la fonction <code>wday<\u002fcode>?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_418bd22",         option = "week_start", value = "week_start", label = structure("week_start", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_37ccc3",         option = "label", value = "label", label = structure("label", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_1b31841",         option = "une date", value = "une date", label = structure("une date", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_439692c",         option = "locale", value = "locale", label = structure("locale", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8dc5eb9",         option = "abbr", value = "abbr", label = structure("abbr", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-compenents-date-2-answer", question = "quiz-compenents-date-2"),     loading = structure("<strong>Loading:<\u002fstrong> \nQuel(s) paramètre(s) prend la fonction <code>wday<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = TRUE, allow_retry = FALSE,     seed = 1364175202.36476, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datecomponents-ex1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datecomponents-ex1-code-editor`)), session)
+output$`tutorial-exercise-datecomponents-ex1-output` <- renderUI({
+  `tutorial-exercise-datecomponents-ex1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datecomponents-ex2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datecomponents-ex2-code-editor`)), session)
+output$`tutorial-exercise-datecomponents-ex2-output` <- renderUI({
+  `tutorial-exercise-datecomponents-ex2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datecomponents-ex3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datecomponents-ex3-code-editor`)), session)
+output$`tutorial-exercise-datecomponents-ex3-output` <- renderUI({
+  `tutorial-exercise-datecomponents-ex3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz-round-date-1",     question = structure("Nous avons décidé d&#39;arrondir la date <code>1999-09-01 11:59:50 UTC<\u002fcode> et nous obtenons <code>2000-01-01 UTC<\u002fcode>. Quelle(s) commande(s) permettent ce résultat ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_6c50ca5",         option = "floor_date(exemple_date, unit = \"year\")",         value = "floor_date(exemple_date, unit = \"year\")",         label = structure("floor_date(exemple_date, unit = &quot;year&quot;)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_121c412",         option = "round_date(exemple_date, unit = \"year\")",         value = "round_date(exemple_date, unit = \"year\")",         label = structure("round_date(exemple_date, unit = &quot;year&quot;)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5761578",         option = "ceiling_date(exemple_date, unit = \"year\")",         value = "ceiling_date(exemple_date, unit = \"year\")",         label = structure("ceiling_date(exemple_date, unit = &quot;year&quot;)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2b59d55",         option = "round_date(exemple_date, unit = \"month\")",         value = "round_date(exemple_date, unit = \"month\")",         label = structure("round_date(exemple_date, unit = &quot;month&quot;)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_982281e",         option = "round_date(exemple_date, unit = \"quarter\")",         value = "round_date(exemple_date, unit = \"quarter\")",         label = structure("round_date(exemple_date, unit = &quot;quarter&quot;)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_90f7326",         option = "round_date(exemple_date, unit = \"halfyear\")",         value = "round_date(exemple_date, unit = \"halfyear\")",         label = structure("round_date(exemple_date, unit = &quot;halfyear&quot;)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-round-date-1-answer", question = "quiz-round-date-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nNous avons décidé d&#39;arrondir la date <code>1999-09-01 11:59:50 UTC<\u002fcode> et nous obtenons <code>2000-01-01 UTC<\u002fcode>. Quelle(s) commande(s) permettent ce résultat ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = TRUE, allow_retry = FALSE,     seed = 2070215900.03598, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-round-date-2",     question = structure("Avec la même date nous arrondissons via la commande <code>round_date(exemple_date, unit = &quot;halfyear&quot;)<\u002fcode>. Quel est le résultat obtenu ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_13a9424",         option = "1999-06-01 UTC", value = "1999-06-01 UTC",         label = structure("1999-06-01 UTC", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_cef9c62",         option = "1999-07-01 UTC", value = "1999-07-01 UTC",         label = structure("1999-07-01 UTC", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_62a5969",         option = "1999-09-01 UTC", value = "1999-09-01 UTC",         label = structure("1999-09-01 UTC", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_4ca9fff",         option = "1999-12-01 UTC", value = "1999-12-01 UTC",         label = structure("1999-12-01 UTC", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9ad6c0d",         option = "2000-01-01 UTC", value = "2000-01-01 UTC",         label = structure("2000-01-01 UTC", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-round-date-2-answer", question = "quiz-round-date-2"),     loading = structure("<strong>Loading:<\u002fstrong> \nAvec la même date nous arrondissons via la commande <code>round_date(exemple_date, unit = &quot;halfyear&quot;)<\u002fcode>. Quel est le résultat obtenu ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = TRUE, allow_retry = FALSE,     seed = 1084154367.99515, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datemodif-ex1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datemodif-ex1-code-editor`)), session)
+output$`tutorial-exercise-datemodif-ex1-output` <- renderUI({
+  `tutorial-exercise-datemodif-ex1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datemodif-ex2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datemodif-ex2-code-editor`)), session)
+output$`tutorial-exercise-datemodif-ex2-output` <- renderUI({
+  `tutorial-exercise-datemodif-ex2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-datemodif-ex3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-datemodif-ex3-code-editor`)), session)
+output$`tutorial-exercise-datemodif-ex3-output` <- renderUI({
+  `tutorial-exercise-datemodif-ex3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz-compenents-durations-1",     question = structure("Lesquelles de ces instructions correspondent à une durée de 10800 secondes ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_817016a",         option = "dhours(3)", value = "dhours(3)", label = structure("dhours(3)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_4475824",         option = "minutes(180)", value = "minutes(180)", label = structure("minutes(180)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_a21e3c9",         option = "second(10800)", value = "second(10800)", label = structure("second(10800)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8ca20f6",         option = "ddays(1/8)", value = "ddays(1/8)", label = structure("ddays(1/8)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7f73435",         option = "dhours(4) - dminutes(60)", value = "dhours(4) - dminutes(60)",         label = structure("dhours(4) - dminutes(60)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Attention à la confusion entre les fonctions de périodes et les fonctions de durées.", html = TRUE, class = c("html",     "character")), incorrect = structure("Attention à la confusion entre les fonctions de périodes et les fonctions de durées.", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-compenents-durations-1-answer", question = "quiz-compenents-durations-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nLesquelles de ces instructions correspondent à une durée de 10800 secondes ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 944346876.560254, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-compenents-durations-2",     question = structure("Sachant que le passage de l&#39;heure d&#39;hiver à l&#39;heure d&#39;été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l&#39;opération ymd(&quot;2019-03-30&quot;, tz=&quot;Europe/Paris&quot;) + days(2) + hours(6) ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_56f0817",         option = "2019-04-01 06:00:00 CEST", value = "2019-04-01 06:00:00 CEST",         label = structure("2019-04-01 06:00:00 CEST", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_110dcde",         option = "2019-04-01 07:00:00 CEST", value = "2019-04-01 07:00:00 CEST",         label = structure("2019-04-01 07:00:00 CEST", html = TRUE, class = c("html",         "character")), correct = FALSE, message = structure("Il s&#39;agit d&#39;opérations sur des périodes et non des durées.", html = TRUE, class = c("html",         "character"))), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_321cd09",         option = "2019-04-01 06:00:00 UTC", value = "2019-04-01 06:00:00 UTC",         label = structure("2019-04-01 06:00:00 UTC", html = TRUE, class = c("html",         "character")), correct = FALSE, message = structure("Attention aux fuseaux horaires !", html = TRUE, class = c("html",         "character"))), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_f8a27c6",         option = "2019-04-01 00:00:00 CEST", value = "2019-04-01 00:00:00 CEST",         label = structure("2019-04-01 00:00:00 CEST", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-compenents-durations-2-answer", question = "quiz-compenents-durations-2"),     loading = structure("<strong>Loading:<\u002fstrong> \nSachant que le passage de l&#39;heure d&#39;hiver à l&#39;heure d&#39;été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l&#39;opération ymd(&quot;2019-03-30&quot;, tz=&quot;Europe/Paris&quot;) + days(2) + hours(6) ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 992239439.037953, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-durationexo-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-durationexo-code-editor`)), session)
+output$`tutorial-exercise-durationexo-output` <- renderUI({
+  `tutorial-exercise-durationexo-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz-intervals-1",     question = structure("Lesquelles de ces instructions créent un intervalle du 1er au 8 janvier 2021 ?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_9dba576",         option = "ymd(2021-01-01)--ymd(2021-01-08)", value = "ymd(2021-01-01)--ymd(2021-01-08)",         label = structure("ymd(2021-01-01)--ymd(2021-01-08)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_1550155",         option = "ymd(2021-01-01)%--%ymd(2021-01-08)", value = "ymd(2021-01-01)%--%ymd(2021-01-08)",         label = structure("ymd(2021-01-01)%--%ymd(2021-01-08)", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_874e54e",         option = "interval(ymd(2021-01-01),ymd(2021-01-08))",         value = "interval(ymd(2021-01-01),ymd(2021-01-08))",         label = structure("interval(ymd(2021-01-01),ymd(2021-01-08))", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2556f5e",         option = "ymd(2021-01-01)%within%ymd(2021-01-08)", value = "ymd(2021-01-01)%within%ymd(2021-01-08)",         label = structure("ymd(2021-01-01)%within%ymd(2021-01-08)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8cd6db0",         option = "ymd(2021-01-01)%--%ymd(2021-08-01)", value = "ymd(2021-01-01)%--%ymd(2021-08-01)",         label = structure("ymd(2021-01-01)%--%ymd(2021-08-01)", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "quiz-intervals-1-answer", question = "quiz-intervals-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nLesquelles de ces instructions créent un intervalle du 1er au 8 janvier 2021 ?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 750722361.650418, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-interval-exo1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-interval-exo1-code-editor`)), session)
+output$`tutorial-exercise-interval-exo1-output` <- renderUI({
+  `tutorial-exercise-interval-exo1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-interval-exo2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-interval-exo2-code-editor`)), session)
+output$`tutorial-exercise-interval-exo2-output` <- renderUI({
+  `tutorial-exercise-interval-exo2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-horodatage-exo-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-horodatage-exo-code-editor`)), session)
+output$`tutorial-exercise-horodatage-exo-output` <- renderUI({
+  `tutorial-exercise-horodatage-exo-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["header-attrs"]},{"type":"character","attributes":{},"value":["2.7"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pandoc"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["header-attrs.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"character","attributes":{},"value":["<style>h1 {font-size: 34px;}\n       h1.title {font-size: 38px;}\n       h2 {font-size: 30px;}\n       h3 {font-size: 24px;}\n       h4 {font-size: 18px;}\n       h5 {font-size: 16px;}\n       h6 {font-size: 12px;}\n       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}\n       pre:not([class]) { background-color: white }<\/style>"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.7"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44]}},"value":[{"type":"character","attributes":{},"value":["backports","base","bslib","checkmate","compiler","datasets","digest","ellipsis","evaluate","fastmap","generics","graphics","grDevices","htmltools","htmlwidgets","httpuv","jquerylib","jsonlite","knitr","later","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","promises","R6","Rcpp","rlang","rmarkdown","rprojroot","sass","shiny","stats","stringi","stringr","tools","utils","withr","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["1.2.1","4.0.4","0.2.4","2.0.0","4.0.4","4.0.4","0.6.27","0.3.1","0.14","1.1.0","0.1.0","4.0.4","4.0.4","0.5.1.1","1.5.3","1.5.5","0.1.3","1.7.2","1.31","1.1.0.1","0.10.1","1.0.0","1.7.10","2.0.1","1.1","4.0.4","0.10","1.2.0.1","2.5.0","1.0.6","0.4.10","2.7","2.0.2","0.3.1","1.6.0","4.0.4","1.5.3","1.4.0","4.0.4","4.0.4","2.4.1","0.21","1.8-4","2.2.1"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">Tutoriel lubridate</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>
