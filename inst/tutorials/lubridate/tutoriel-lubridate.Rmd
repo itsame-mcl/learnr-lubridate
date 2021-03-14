@@ -76,7 +76,10 @@ quiz(
     answer("dd-mm-yyyy"),
     answer("yyyy-mm-dd", correct = TRUE),
     answer("dd-mm-yy"),
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   )
 )
 ```
@@ -279,13 +282,18 @@ En manipulant la fonction `month` il est également possible d'afficher tous les
 ```{r quiz-compenents-date}
 quiz(
   question("Quel(s) paramètre(s) prend la fonction `day`?",
+           type = "multiple",
     answer("week_start"),
     answer("label"),
     answer("une date", correct = TRUE),
     answer("locale"),
     answer("abbr"),
     allow_retry = FALSE,
-    random_answer_order = TRUE
+    random_answer_order = TRUE,
+    incorrect = "La fonction `day` ne prend qu'un paramètre : une date.",
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   ),
   question("Quel(s) paramètre(s) prend la fonction `wday`?",
     answer("week_start", correct = TRUE),
@@ -294,7 +302,11 @@ quiz(
     answer("locale", correct = TRUE),
     answer("abbr", correct = TRUE),
     allow_retry = FALSE,
-    random_answer_order = TRUE
+    random_answer_order = TRUE,
+    incorrect = "La fonction `wday` prend en paramètre tous ceux cités ci-dessus.",
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   )
 )
 ```
@@ -515,15 +527,23 @@ round_date(exemple_date, "halfyear")
 
 ```{r quiz-round-date}
 quiz(
-  question("Nous avons décidé d'arrondir la date `1999-09-01 11:59:50 UTC` et nous obtenons `2000-01-01 UTC`. Quelle(s) commande(s) permettent ce résultat ?",
-    answer('floor_date(exemple_date, unit = "year")'),
+  question("Nous avons décidé d'arrondir la date `1999-09-01 11:59:50 UTC` et nous obtenons `2000-01-01 UTC`. Quelles commandes permettent ce résultat ?",
+    answer('floor_date(exemple_date, unit = "year")',
+           message = "On veut arrondir par valeurs supérieures."),
     answer('round_date(exemple_date, unit = "year")', correct = TRUE),
     answer('ceiling_date(exemple_date, unit = "year")', correct = TRUE),
-    answer('round_date(exemple_date, unit = "month")'),
-    answer('round_date(exemple_date, unit = "quarter")'),
-    answer('round_date(exemple_date, unit = "halfyear")'),
-    allow_retry = FALSE,
-    random_answer_order = TRUE
+    answer('round_date(exemple_date, unit = "month")',
+           message = "On veut arrondir la date à l'année supérieure."),
+    answer('round_date(exemple_date, unit = "quarter")',
+           message = "On veut arrondir la date à l'année supérieure."),
+    answer('round_date(exemple_date, unit = "halfyear")',
+           message = "On veut arrondir la date à l'année supérieure."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE, 
+    try_again_button = "Recommencer", 
+    incorrect = "Deux commandes permettent d'obtenir ce résultat.", 
+    submit_button = "Soumettre la réponse", 
+    correct = "Bonne réponse !"
   ),
   question('Avec la même date nous arrondissons via la commande `round_date(exemple_date, unit = "halfyear")`. Quel est le résultat obtenu ?',
     answer('1999-06-01 UTC'),
@@ -531,8 +551,11 @@ quiz(
     answer('1999-09-01 UTC'),
     answer('1999-12-01 UTC'),
     answer('2000-01-01 UTC'),
-    allow_retry = FALSE,
-    random_answer_order = TRUE
+    allow_retry = TRUE,
+    random_answer_order = TRUE,
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   )
 )
 ```
@@ -708,14 +731,20 @@ quiz(
     answer("ddays(1/8)", correct = TRUE),
     answer("dhours(4) - dminutes(60)", correct = TRUE),
     incorrect = "Attention à la confusion entre les fonctions de périodes et les fonctions de durées.",
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   ),
   question("Sachant que le passage de l'heure d'hiver à l'heure d'été a eu lieu le dimanche 31 mars 2019 à 02h00, quel est le résultat de l'opération ymd(\"2019-03-30\", tz=\"Europe/Paris\") + days(2) + hours(6) ?",
     answer("2019-04-01 06:00:00 CEST", correct = TRUE),
     answer("2019-04-01 07:00:00 CEST", message = "Il s'agit d'opérations sur des périodes et non des durées."),
     answer("2019-04-01 06:00:00 UTC", message = "Attention aux fuseaux horaires !"),
     answer("2019-04-01 00:00:00 CEST"),
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   )
 )
 ```
@@ -787,7 +816,10 @@ quiz(
     answer("interval(ymd(2021-01-01),ymd(2021-01-08))", correct = TRUE),
     answer("ymd(2021-01-01)%within%ymd(2021-01-08)"),
     answer("ymd(2021-01-01)%--%ymd(2021-08-01)"),
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    try_again_button = "Recommencer", 
+    submit_button = "Soumettre la réponse",
+    correct = "Bonne réponse !"
   )
 )
 ```
