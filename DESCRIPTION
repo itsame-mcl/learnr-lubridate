@@ -1,7 +1,7 @@
 Package: learnr.lubridate
 Type: Package
 Title: Tutoriel libridate
-Version: 1.0.0
+Version: 1.0.1
 Author: Alanna GENIN <alanna.genin@eleve.ensai.fr>, Maxence LAGALLE <maxence.lagalle@eleve.ensai.fr>, Kévin LEROY <kevin.leroy@eleve.ensai.fr>
 Maintainer: Alanna GENIN <alanna.genin@eleve.ensai.fr>, Maxence LAGALLE <maxence.lagalle@eleve.ensai.fr>, Kévin LEROY <kevin.leroy@eleve.ensai.fr>
 License: CC-BY-NC-SA (>=4.0) + file LICENSE
