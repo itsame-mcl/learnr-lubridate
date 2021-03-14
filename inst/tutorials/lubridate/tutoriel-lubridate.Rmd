@@ -222,8 +222,10 @@ exemple_date <- dmy_hms("01-09-1999 11:59:59")
 ```{r examples-data-management, echo=TRUE, include=TRUE, comment=''}
 # l'heure
 hour(exemple_date)
-# le jour
+# le jour du mois
 day(exemple_date) 
+# le jour de l'année
+yday(exemple_date) 
 # le numéro de la semaine
 week(exemple_date) 
 # l'année
@@ -243,7 +245,7 @@ month(exemple_date, label = T, abbr = F)
 
 Cela affiche également les autres mois sous forme de facteur et l'on voit bien qu'ils sont ordonnés selon un ordre chronologique.
 
-A cela s'ajoute deux autres options : `week_start` et `locale` qui peuvent être utilisées dans le cas de dates internationales (conversion entre différents systèmes de dates). L'option `week_start` défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
+A cela s'ajoute deux autres options : `week_start` et `locale` qui peuvent être utilisées dans le cas de dates internationales (conversion entre différents systèmes de dates par exemple). L'option `week_start` défini le début de la semaine. Par convention, 1 correspond à lundi et 7 correspond à dimanche. Quant à `locale`, il s'agit de définir les noms des jours ou mois (en fonction de la langue).
 
 Deux fonctions ont un paramètre supplémentaire. Il s'agit des fonctions `quarter` et `semester` qui ont la syntaxe suivante : `fonction(x, with_year = FALSE)`. Le second paramètre indique si l'on veut concaténer ou non le numéro du semestre avec l'année. Par exemple, si on veut connaître le semestre du 1er janvier 2020 en utilisant `with_year = TRUE` on obtiendra 2020.1 car le 01/01/2020 est un jour du premier semestre.
 
@@ -509,7 +511,7 @@ round_date(exemple_date, "5 mins")
 ceiling_date(exemple_date, "5 hours")
 ```
 
-Cette fonction permet une granularité encore plus fine notamment via des arrondis bimensuels, semestriels, trimestriels, biannuels et annuels comme dans les exemples ci-dessous. On peut même vérifier qu'un arrondi par trimestre correspond à un arrondi tous les 3 mois.
+Cette fonction permet une granularité encore plus large notamment via des arrondis bimensuels, semestriels, trimestriels, biannuels et annuels comme dans les exemples ci-dessous. On peut même vérifier qu'un arrondi par trimestre correspond à un arrondi tous les 3 mois.
 
 ```{r round-bimonth-quarter-halfyear, echo=TRUE, include=TRUE, comment=''}
 # arrondi bimensuel
@@ -533,24 +535,28 @@ quiz(
     answer('round_date(exemple_date, unit = "year")', correct = TRUE),
     answer('ceiling_date(exemple_date, unit = "year")', correct = TRUE),
     answer('round_date(exemple_date, unit = "month")',
-           message = "On veut arrondir la date à l'année supérieure."),
+           message = "On veut arrondir la date à l'année supérieure ou biannuellement."),
     answer('round_date(exemple_date, unit = "quarter")',
-           message = "On veut arrondir la date à l'année supérieure."),
+           message = "On veut arrondir la date à l'année supérieure ou biannuellement."),
     answer('round_date(exemple_date, unit = "halfyear")',
-           message = "On veut arrondir la date à l'année supérieure."),
+           message = "On veut arrondir la date à l'année supérieure ou biannuellement."),
+    answer('ceiling_date(exemple_date, unit = "halfyear")', correct = TRUE, 
+           message = "Correct"),
     allow_retry = TRUE,
     random_answer_order = TRUE, 
     try_again_button = "Recommencer", 
-    incorrect = "Deux commandes permettent d'obtenir ce résultat.", 
+    incorrect = "Trois commandes permettent d'obtenir ce résultat.", 
     submit_button = "Soumettre la réponse", 
     correct = "Bonne réponse !"
   ),
   question('Avec la même date nous arrondissons via la commande `round_date(exemple_date, unit = "halfyear")`. Quel est le résultat obtenu ?',
-    answer('1999-06-01 UTC'),
-    answer('1999-07-01 UTC', correct = TRUE),
-    answer('1999-09-01 UTC'),
-    answer('1999-12-01 UTC'),
-    answer('2000-01-01 UTC'),
+    answer('1999-06-01 UTC', message = "Ne correspond pas à un arrondi biannuel"),
+    answer('1999-07-01 UTC', correct = TRUE,
+           message = "Avec `halfyear` l'arrondi est soit le 1er janvier soit le 1er juillet."),
+    answer('1999-09-01 UTC', message = "Ne correspond pas à un arrondi biannuel"),
+    answer('1999-12-01 UTC', message = "Ne correspond pas à un arrondi biannuel"),
+    answer('2000-01-01 UTC', 
+           message = 'Correspond à `ceiling_date(exemple_date, unit = "halfyear")`'),
     allow_retry = TRUE,
     random_answer_order = TRUE,
     try_again_button = "Recommencer", 
